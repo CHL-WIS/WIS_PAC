@@ -1,0 +1,274 @@
+ -------------------------------------------------------------------- $
+$ WAVEWATCH III multi-grid model driver input file                     $
+$ -------------------------------------------------------------------- $
+$
+$ *******************************************************************
+$ *** NOTE : This is an example file from the mww3_test_05 script ***
+$ ***        Unlilke other input example files this one CANNOT    ***
+$ ***        be run as an independent interactive run             ***
+$ *******************************************************************
+$
+$ The first input line sets up the general multi-grid model definition
+$ by defining the follwing six parameters :
+$
+$   1) Number of wave model grids.i                         ( NRGRD )
+$   2) Number of grids definint input fields.               ( NRINP )
+$   3) Flag for using unified point output file.           ( UNIPTS )
+$   4) Output server type as in ww3_shel.inp
+$   5) Flag for dedicated process for iunified point output.
+$   6) Flag for grids sharing dedicated output processes.
+$
+  2 0 F 1 T T
+$
+$ -------------------------------------------------------------------- $
+$ Now each actual wave model grid is defined using 13 parameters to be
+$ read fom a single line in the file. Each line contains the following
+$ parameters
+$     1)   Define the grid with the extension of the mod_def file.
+$    2-8)  Define the inputs used by the grids with 8 keywords
+$          corresponding to the 8 flags defining the input in the
+$          input files. Valid keywords are:
+$            'no'      : This input is not used.
+$            'native'  : This grid has its own input files, e.g. grid
+$                        grdX (mod_def.grdX) uses ice.grdX.
+$            'MODID'   : Take input from the grid identified by
+$                        MODID. In the example below, all grids get
+$                        their wind from wind.input (mod_def.input).
+$     9)   Rank number of grid (internally sorted and reassigned).
+$    10)   Group number (internally reassigned so that different
+$          ranks result in different group numbers.
+$   11-12) Define fraction of cumminicator (processes) used for this
+$          grid.
+$    13)   Flag identifying dumping of boundary data used by this
+$          grid. If true, the file nest.MODID is generated.
+$
+  'grd1'  'no' 'no' 'native' 'no' 'no' 'no' 'no'   1  1  0.00 1.00  F
+  'grd2'  'no' 'no' 'native' 'no' 'no' 'no' 'no'   2  1  0.00 1.00  F
+$  'grd3'  'no' 'no' 'native' 'no' 'no' 'no' 'no'   3  1  0.00 1.00  F
+$  'grd4'  'no' 'no' 'native' 'no' 'no' 'no' 'no'   4  2  0.00 1.00  F  
+$  'grd5'  'no' 'no' 'native' 'no' 'no' 'no' 'no'   5  3  0.00 1.00  F
+$  'grd6'  'no' 'no' 'native' 'no' 'no' 'no' 'no'   6  4  0.00 1.00  F
+$ 'grd3'  'no' 'no' 'input' 'no' 'no' 'no' 'no'   3  1  0.50 1.00  F
+$
+$ In this example three grids are used requiring the files
+$ mod_def.grdN. All files get ther winds from the grid 'input'
+$ defined by mod_def.input, and no other inputs are used. In the lines
+$ that are commented out, each grid runs on a part of the pool of
+$ processes assigned to the computation.
+$
+$ -------------------------------------------------------------------- $
+$ Starting and ending times for the entire model run
+$
+        
+$
+$ -------------------------------------------------------------------- $
+$ Specific multi-scale model settings (single line).
+$    Flag for masking computation in two-way nesting (except at
+$                                                     output times).
+$    Flag for masking at printout time.
+$
+  F F
+$
+$ Define output data ------------------------------------------------- $
+$
+$ Five output types are available (see below). All output types share
+$ a similar format for the first input line:
+$ - first time in yyyymmdd hhmmss format, output interval (s), and
+$   last time in yyyymmdd hhmmss format (all integers).
+$ Output is disabled by setting the output interval to 0.
+$
+$ Type 1 : Fields of mean wave parameters
+$          Standard line and line with flags to activate output fields
+$          as defined in section 2.4 of the manual. The second line is
+$          not supplied if no output is requested.
+$                               The raw data file is out_grd.ww3,
+$                               see w3iogo.ftn for additional doc.
+$
+$
+     01 3600   
+$
+$ (1) Forcing Fields
+  T
+$ DPT CUR WND DT  WLV ICE IBG D50
+  T   T   T   T   T   F   F   F
+$ (2) Standard mean wave Parameters
+  T
+$ HS  LM  TZ  TE  TM  FP  DIR SPR DP
+  T   T   T   T   T   T   T   T   T
+$ (3) Frequency-dependent parameters
+  T
+$ EF TH1M STH1M TH1M STH1M WN
+  T  T  T  F  F  F
+$ (4) Spectral Partition Parameters
+  T
+$ PHS PTP PLP PTH PSP PWS WSF PNR
+  T   T   T   T   T   T   T   T
+$ (5) Atmosphere-waves layer
+  F
+$ UST CHN CGE FAW TAW NWS WCC WCF WCH WCM
+  T   T   T   T   T   T   T   T   T   T
+$ (6) Wave-Ocean layer
+  F
+$ SXY TWO BHD FOC TUS USS P2S U3D P2L
+  T   T   T   T   T   T   T   F   F   F
+$ (7) Wave-bottom layer
+  F
+$ ABR UBR BED FBB TBB
+  T   T   T   T   T
+$ (8) Spectrum parameters
+  T
+$ MSS MSC
+  T   T
+$ (9) Numerical diagnostics
+  F
+$ DTD FC  CFX CFD CFK
+  T   T   T   T   T
+$ (10) User defined (NOEXTR flags needed)
+  F
+$ US1  US2
+$ T    T
+$
+$
+     01 0   
+$
+$
+     01 0   
+$
+$
+$ Type 4 : Restart files (no additional data required).
+$                               The data file is restartN.ww3, see
+$                               w3iors.ftn for additional doc.
+$
+      1   
+$
+$ Type 5 : Boundary data (no additional data required).
+$                               The data file is nestN.ww3, see
+$                               w3iobp.ftn for additional doc.
+$
+    01     0   
+$
+    01     0   
+$
+$ -------------------------------------------------------------------- $
+$ Output requests per grid and type to overwrite general setup
+$ as defined above. First record per set is the grid name MODID
+$ and the output type number. Then follows the standard time string,
+$ and conventional data as per output type. In mww3_test_05 this is
+$ not used. Below, one example generating partitioning output for
+$ the inner grid is included but commented out.
+$
+ 'grd1'  2
+   01  3600   
+ -72.9697  34.89667  '41001'
+ -75.2406  32.29500  '41002'
+ -79.0994  32.51000  '41004'
+ -77.3817  29.30190  '41006'
+ -81.0800  30.73000  '41008'
+ -80.1833  28.50190  '41009'
+ -78.5331  28.88000  '41010'
+ -80.5333  30.04140  '41012'
+ -77.7431  33.43640  '41013'
+ -76.5217  24.63667  '41016'
+ -75.4019  35.00610  '41025'
+ -77.2794  34.47610  '41035'
+ -76.9525  34.21080  '41036'
+ -70.8700  23.86690  '41046'
+ -71.4911  27.46940  '41047'
+ -69.6489  31.97833  '41048'
+ -63.0000  27.50000  '41049'
+ -73.6489  38.36833  '44001'
+ -70.6433  38.50000  '44004'
+ -68.5600  42.65033  '44005'
+ -70.0900  43.53000  '44007'
+ -69.4275  40.50000  '44008'
+ -74.7000  38.45000  '44009'
+ -66.5550  41.06000  '44011'
+ -74.5800  38.79000  '44012'
+ -74.8336  36.58310  '44014'
+ -73.6156  37.11280  '44015'
+ -72.0478  40.69220  '44017'
+ -69.2944  41.25860  '44018'
+ -70.1864  41.44310  '44020'
+ -74.3911  37.53533  '44023'
+ -73.1667  40.25033  '44025'
+ -67.3144  44.27250  '44027'
+ -73.7028  40.36940  '44065'
+ -72.6006  39.58310  '44066'
+ -71.0036  41.39250  '44070'
+ -53.0386  14.48033  '41040'
+ -45.9967  14.50667  '41041'
+ -65.0136  20.98890  '41043'
+ -58.6950  21.65190  '41044'
+ -70.9939  23.99866  '41046'
+ -71.4911  27.46940  '41047'
+ -69.6489  31.97833  '41048'
+ -63.0000  27.50000  '41049'
+ -51.0000  45.00000  '44131'
+ -61.1300  41.19000  '44137'
+ -53.6200  44.25000  '44138'
+ -57.3500  44.32000  '44139'
+ -50.6100  42.73000  '44140'
+ -56.1300  42.12000  '44141'
+ -49.9800  45.89000  '44143'
+     0.E3  0.E3 'STOPSTRING'
+$
+ 'grd2'  2
+   01   3600   
+ -72.9697  34.89667  '41001'
+ -75.2406  32.29500  '41002'
+ -79.0994  32.51000  '41004'
+ -77.3817  29.30190  '41006'
+ -81.0800  30.73000  '41008'
+ -80.1833  28.50190  '41009'
+ -78.5331  28.88000  '41010'
+ -80.5333  30.04140  '41012'
+ -77.7431  33.43640  '41013'
+ -76.5217  24.63667  '41016'
+ -75.4019  35.00610  '41025'
+ -76.9525  34.21080  '41036'
+ -70.8700  23.86690  '41046'
+ -71.4911  27.46940  '41047'
+ -69.6489  31.97833  '41048'
+ -63.0000  27.50000  '41049'
+ -73.6489  38.36833  '44001'
+ -70.6433  38.50000  '44004'
+ -68.5600  42.65033  '44005'
+ -70.0900  43.53000  '44007'
+ -69.4275  40.50000  '44008'
+ -74.7000  38.45000  '44009'
+ -66.5550  41.06000  '44011'
+ -74.5800  38.79000  '44012'
+ -70.7800  42.38000  '44013'
+ -74.8336  36.58310  '44014'
+ -73.6156  37.11280  '44015'
+ -72.0478  40.69220  '44017'
+ -69.2944  41.25860  '44018'
+ -74.3911  37.53533  '44023'
+ -73.1667  40.25033  '44025'
+ -67.3144  44.27250  '44027'
+ -73.7028  40.36940  '44065'
+ -72.6006  39.58310  '44066'
+ -81.2925  30.70921  '41112'
+ -75.5914  36.25492  '44100'
+ -75.7200  36.91519  '44099'
+ -71.1260  40.96861  '44097'
+ -70.1688  42.79779  '44098'
+ -61.1300  41.19000  '44137'
+ -57.3500  44.32000  '44139'
+ -56.1300  42.12000  '44141'
+      0.E3  0.E3  'STOPSTRING'
+$
+$ -------------------------------------------------------------------- $
+$ Mandatory end of outpout requests per grid, identified by output
+$ type set to 0.
+$
+  'the_end'  0
+$
+$ -------------------------------------------------------------------- $
+$ Moving grid data as in ww3_hel.inp. All grids will use same data.
+$
+   'STP'
+$
+$ -------------------------------------------------------------------- $
+$ End of input file                                                    $
+$ -------------------------------------------------------------------- $

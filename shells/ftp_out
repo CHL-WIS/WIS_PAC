@@ -1,0 +1,21 @@
+#!/bin/bash
+
+STORM_NAME=$1
+cd ../outdat/${STORM_NAME}
+year=`echo $STORM_NAME | cut -c1-4 `
+mon=`echo $STORM_NAME | cut -c5-6 `
+fname=$year"-"$mon
+sftp thesser1@134.164.107.97 <<ENDFTP
+cd /mnt/CHL_WIS_2/Pacific/Eval_2014/PAC_haw1/model
+mkdir $fname
+cd $fname
+mkdir basin_l1
+mkdir hawaii_l2
+cd basin_l1
+mput *basin_l1*.tgz
+cd ../hawaii_l2
+mput *hawaii_l2*.tgz
+bye
+ENDFTP
+
+
