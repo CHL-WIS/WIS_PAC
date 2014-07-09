@@ -3,6 +3,8 @@
 STORM_NAME=$1
 RUN_NAME=$2
 BASE=$3
+BASIN=$4
+UNAME=$5
 EXED=$BASE/exe
 SHEL=$BASE/shells
 WORKDIR=$BASE/outdat/$STORM_NAME
@@ -13,10 +15,10 @@ cat > serial_post.sh << EOF
 
 cd $WORKDIR
 
-(   $SHEL/ww3_post_mpi.sh  basin_l1 basin_l1 $STORM_NAME $BASE  > ww3_post1.out    ) &
-(   $SHEL/ww3_post_mpi.sh  westc_l2 westc_l2 $STORM_NAME $BASE  > ww3_post2.out    ) &
-(   $SHEL/ww3_post_mpi.sh  westc_l3 westc_l3 $STORM_NAME $BASE  > ww3_post3.out    ) &
-(   $SHEL/ww3_post_mpi.sh  cali_l4 cali_l4 $STORM_NAME $BASE  > ww3_post4.out    ) &
+(   $SHEL/ww3_post_mpi.sh  basin_l1 $STORM_NAME $BASE $BASIN $UNAME  > ww3_post1.out    ) &
+(   $SHEL/ww3_post_mpi.sh  westc_l2 $STORM_NAME $BASE $BASIN $UNAME > ww3_post2.out    ) &
+(   $SHEL/ww3_post_mpi.sh  westc_l3 $STORM_NAME $BASE $BASIN $UNAME > ww3_post3.out    ) &
+(   $SHEL/ww3_post_mpi.sh  cali_l4  $STORM_NAME $BASE $BASIN $UNAME > ww3_post4.out    ) &
 
 wait
 

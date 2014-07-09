@@ -53,7 +53,7 @@ $   4) Output server type as in ww3_shel.inp
 $   5) Flag for dedicated process for iunified point output.
 $   6) Flag for grids sharing dedicated output processes.
 $
-  4 2 F 1 F F
+  6 2 F 1 F F
 $
  'inp_basin' F F T F F F F
  'inp_westc' F F T F F F F
@@ -83,9 +83,9 @@ $
   'basin_l1'  'no' 'no' 'inp_basin' 'no' 'no' 'no' 'no'   1  1  0.00 1.00  F
   'westc_l2'  'no' 'no' 'inp_westc' 'no' 'no' 'no' 'no'   2  1  0.00 1.00  F
   'westc_l3'  'no' 'no' 'inp_westc' 'no' 'no' 'no' 'no'   3  1  0.00 1.00  F
-  'cali_l4'  'no' 'no' 'native' 'no' 'no' 'no' 'no'   4  2  0.00 1.00  F  
-$  'grd5'  'no' 'no' 'input' 'no' 'no' 'no' 'no'   5  3  0.00 1.00  F
-$  'grd6'  'no' 'no' 'input' 'no' 'no' 'no' 'no'   6  4  0.00 1.00  F
+  'cali_l4'  'no' 'no' 'native' 'no' 'no' 'no' 'no'   4  1  0.00 1.00  F  
+  'hawaii_l2'  'no' 'no' 'inp_basin' 'no' 'no' 'no' 'no'   5  1  0.00 1.00  F
+  'hawaii_l3'  'no' 'no' 'inp_basin' 'no' 'no' 'no' 'no'   6  1  0.00 1.00  F
 $ 'grd3'  'no' 'no' 'input' 'no' 'no' 'no' 'no'   3  1  0.50 1.00  F
 $
 $ In this example three grids are used requiring the files
@@ -125,46 +125,8 @@ $
 $
     $sdat1 $startf 3600  $edat1 $edat2
 $
-$ (1) Forcing Fields
-  T
-$ DPT CUR WND DT  WLV ICE IBG D50
-  T   T   T   T   T   F   F   F
-$ (2) Standard mean wave Parameters
-  T
-$ HS  LM  TZ  TE  TM  FP  DIR SPR DP
-  T   T   T   T   T   T   T   T   T
-$ (3) Frequency-dependent parameters
-  T
-$ EF TH1M STH1M TH1M STH1M WN
-  T  T  T  F  F  F
-$ (4) Spectral Partition Parameters
-  T
-$ PHS PTP PLP PTH PSP PWS WSF PNR
-  T   T   T   T   T   T   T   T
-$ (5) Atmosphere-waves layer
-  F
-$ UST CHN CGE FAW TAW NWS WCC WCF WCH WCM
-$  T   T   T   T   T   T   T   T   T   T
-$ (6) Wave-Ocean layer
-  F
-$ SXY TWO BHD FOC TUS USS P2S U3D P2L
-$  T   T   T   T   T   T   T   F   F   F
-$ (7) Wave-bottom layer
-  F
-$ ABR UBR BED FBB TBB
-$  T   T   T   T   T
-$ (8) Spectrum parameters
-  F
-$ MSS MSC
-$  T   T
-$ (9) Numerical diagnostics
-  F
-$ DTD FC  CFX CFD CFK
-$  T   T   T   T   T
-$ (10) User defined (NOEXTR flags needed)
-  F
-$ US1  US2
-$ T    T
+  N
+  WND HS FP DIR SPR PHS PTP PDIR PNR
 $
 $
     $sdat1 $startf 0  $edat1 $edat2

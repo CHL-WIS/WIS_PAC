@@ -9,11 +9,13 @@
 #
 # ---------------------------------------------------------------
 #
-BASE=/home/thesser1/Pacific/WIS_PAC
+UNAME='Tyler J. Hesser'
+BASIN='pac'
+BASE=$WORKDIR/WIS_PAC
 OUTD=$BASE/outdat
 INPF=$BASE/inputfiles
 SHEL=$BASE/shells
-WIND=$BASE/winds/
+WIND=$INPF/winds/
 #WIND=$BASE/winds/CFSR
 FCOD=$BASE/fcode
 EXED=$BASE/exe
@@ -121,45 +123,39 @@ cp mod_def.ww3 mod_def.inp_basin
 mv mod_def.ww3 mod_def.basin_l1
 mv wind.ww3 wind.inp_basin
 #
-#wind3a=` echo $WINDPROC | cut -c1-6 `
-#wind2a=` echo $WINDPROC | cut -c1-15 `
-#wind2=$wind2a"WestCoastDomain.win"
-#echo $wind2
-#ln -sf $WIND/$wind2 $WORKDIR/fort.2
-#$FCOD/preproc_wnd_WW3.x
-#cp fort.12 ${WORKDIR}/${STORM_NAME}-westc.wnd
-#rm fort.2
-#$SHEL/genscript_westc_l2.sh $INPF $WORKDIR $EXED
-#$SHEL/genscript_prep_westc.sh $WORKDIR $EXED
-#cp mod_def.ww3 mod_def.inp_westc
-#mv mod_def.ww3 mod_def.westc_l2
-#mv wind.ww3 wind.inp_westc
-##
-#$SHEL/genscript_westc_l3.sh $INPF $WORKDIR $EXED
-##$SHEL/genscript_prep2.sh $WORKDIR $EXED
-#mv mod_def.ww3 mod_def.westc_l3
-##mv wind.ww3 wind.grd3
-##
-#wind3=$wind3a"_SoCal.Win"
-#echo $wind3
-#ln -sf $WIND/$wind3 $WORKDIR/fort.2
-#$FCOD/preproc_wnd_WW3.x
-#cp fort.12 ${WORKDIR}/${STORM_NAME}-cali.wnd
-#rm fort.2
-#$SHEL/genscript_cali_l4.sh $INPF $WORKDIR $EXED
-#$SHEL/genscript_prep_cali.sh $WORKDIR $EXED
-#mv mod_def.ww3 mod_def.cali_l4
-#mv wind.ww3 wind.cali_l4
-##
-##$SHEL/genscript_level3S1.sh $INPF $WORKDIR $EXED
-##$SHEL/genscript_prep2.sh $WORKDIR $EXED
-##mv mod_def.ww3 mod_def.grd5
-##mv wind.ww3 wind.grd5
-##
-#$SHEL/genscript_level3S2.sh $INPF $WORKDIR $EXED
-#$SHEL/genscript_prep2.sh $WORKDIR $EXED
-#mv mod_def.ww3 mod_def.grd6
-#mv wind.ww3 wind.grd6
+wind3a=` echo $WINDPROC | cut -c1-6 `
+wind2a=` echo $WINDPROC | cut -c1-15 `
+wind2=$wind2a"WestCoastDomain.win"
+echo $wind2
+ln -sf $WIND/$wind2 $WORKDIR/fort.2
+$FCOD/preproc_wnd_WW3.x
+cp fort.12 ${WORKDIR}/${STORM_NAME}-westc.wnd
+rm fort.2
+$SHEL/genscript_westc_l2.sh $INPF $WORKDIR $EXED
+$SHEL/genscript_prep_westc.sh $WORKDIR $EXED
+cp mod_def.ww3 mod_def.inp_westc
+mv mod_def.ww3 mod_def.westc_l2
+mv wind.ww3 wind.inp_westc
+#
+$SHEL/genscript_westc_l3.sh $INPF $WORKDIR $EXED
+mv mod_def.ww3 mod_def.westc_l3
+#
+wind3=$wind3a"_SoCal.Win"
+echo $wind3
+ln -sf $WIND/$wind3 $WORKDIR/fort.2
+$FCOD/preproc_wnd_WW3.x
+cp fort.12 ${WORKDIR}/${STORM_NAME}-cali.wnd
+rm fort.2
+$SHEL/genscript_cali_l4.sh $INPF $WORKDIR $EXED
+$SHEL/genscript_prep_cali.sh $WORKDIR $EXED
+mv mod_def.ww3 mod_def.cali_l4
+mv wind.ww3 wind.cali_l4
+#
+$SHEL/genscript_hawaii_l2.sh $INPF $WORKDIR $EXED
+mv mod_def.ww3 mod_def.hawaii_l2
+#
+$SHEL/genscript_hawaii_l3.sh $INPF $WORKDIR $EXED
+mv mod_def.ww3 mod_def.hawaii_l3
 #
 rm *.grd *.mask *.obst
 $SHEL/genscript_multi.sh $STORM_NAME $WORKDIR

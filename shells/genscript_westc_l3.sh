@@ -4,13 +4,16 @@ INPF=$1
 WORKDIR=$2
 EXED=$3
 
-cd $INPF
-ls -1 *westc_l3* > grid.1
-exec 3<&0
-exec 0<"grid.1"
-read gridf
-read maskf
-read obstf
+cd $INPF/grids/westc
+for file in ./*westc_l3*.grd ; do
+  gridf=$file
+done
+for file in ./*westc_l3*.obstr ; do
+  obstf=$file
+done
+for file in ./*westc_l3*.mask ; do
+  maskf=$file
+done
 cp $INPF/$gridf $WORKDIR/.
 cp $INPF/$obstf $WORKDIR/.
 cp $INPF/$maskf $WORKDIR/.

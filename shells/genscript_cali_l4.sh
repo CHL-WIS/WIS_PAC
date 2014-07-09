@@ -4,13 +4,16 @@ INPF=$1
 WORKDIR=$2
 EXED=$3
 
-cd $INPF
-ls -1 *cali_l4* > grid.1
-exec 3<&0
-exec 0<"grid.1"
-read gridf
-read maskf
-read obstf
+cd $INPF/grids/cali
+for file in ./*cali*.grd ; do
+  gridf=$file
+done
+for file in ./*cali*.obstr ; do
+  obstf=$file
+done
+for file in ./*cali*.mask ; do
+  maskf=$file
+done
 cp $INPF/$gridf $WORKDIR/.
 cp $INPF/$obstf $WORKDIR/.
 cp $INPF/$maskf $WORKDIR/.

@@ -4,13 +4,22 @@ INPF=$1
 WORKDIR=$2
 EXED=$3
 
-cd $INPF
-ls -1 *basin_l1* > grid.1
-exec 3<&0
-exec 0<"grid.1"
-read gridf
-read maskf
-read obstf
+cd $INPF/grids/basin
+for file in ./*basin*.grd ; do
+  gridf=$file
+done
+for file in ./*basin*.obstr ; do 
+  obstf=$file
+done
+for file in ./*basin*.mask ; do
+  maskf=$file
+done
+#ls -1 *basin_l1* > grid.1
+#exec 3<&0
+#exec 0<"grid.1"
+#read gridf
+#read maskf
+#read obstf
 cp $INPF/$gridf $WORKDIR/.
 cp $INPF/$obstf $WORKDIR/.
 cp $INPF/$maskf $WORKDIR/.

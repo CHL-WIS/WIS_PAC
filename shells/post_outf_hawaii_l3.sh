@@ -75,12 +75,12 @@ $ US1  US2
 $ T    T
 $
   3 0
-  0 53 0 45 1 1
+  0 85 0 61 1 1
 $
 $ End of input file
 EOF
 
-$EXED/ww3_outf > ww3_outf1_hawaii_l2.out
+$EXED/ww3_outf > ww3_outf1_hawaii_l3.out
 wait
 $SHEL/phs_conv.sh _sea
 wait
@@ -132,12 +132,12 @@ $ US1  US2
 $ T    T
 $
   3 1
-  0 53 0 45 1 1
+  0 85 0 61 1 1
 $
 $ End of input file
 EOF
 
-$EXED/ww3_outf > ww3_outf2_hawaii_l2.out
+$EXED/ww3_outf > ww3_outf2_hawaii_l3.out
 wait
 $SHEL/phs_conv.sh _sw1
 wait
@@ -189,12 +189,12 @@ $ US1  US2
 $ T    T
 $
   3 2
-  0 53 0 45 1 1
+  0 85 0 61 1 1
 $
 $ End of input file
 EOF
 
-$EXED/ww3_outf > ww3_outf3_hawaii_l2.out
+$EXED/ww3_outf > ww3_outf3_hawaii_l3.out
 wait
 $SHEL/phs_conv.sh _sw2
 wait
