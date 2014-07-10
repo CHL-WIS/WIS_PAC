@@ -4,7 +4,9 @@ INPF=$1
 WORKDIR=$2
 EXED=$3
 
-cd $INPF/grids/basin
+WDIR=$INPF/grids/basin
+
+cd $WDIR
 for file in ./*basin*.grd ; do
   gridf=$file
 done
@@ -20,9 +22,9 @@ done
 #read gridf
 #read maskf
 #read obstf
-cp $INPF/$gridf $WORKDIR/.
-cp $INPF/$obstf $WORKDIR/.
-cp $INPF/$maskf $WORKDIR/.
+cp $WDIR/$gridf $WORKDIR/.
+cp $WDIR/$obstf $WORKDIR/.
+cp $WDIR/$maskf $WORKDIR/.
 gf="'"$gridf"'"
 of="'"$obstf"'"
 mf="'"$maskf"'"

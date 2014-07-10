@@ -4,7 +4,9 @@ INPF=$1
 WORKDIR=$2
 EXED=$3
 
-cd $INPF/grids/westc
+WDIR=$INPF/grids/westc
+
+cd $WDIR
 for file in ./*westc_l3*.grd ; do
   gridf=$file
 done
@@ -14,9 +16,9 @@ done
 for file in ./*westc_l3*.mask ; do
   maskf=$file
 done
-cp $INPF/$gridf $WORKDIR/.
-cp $INPF/$obstf $WORKDIR/.
-cp $INPF/$maskf $WORKDIR/.
+cp $WDIR/$gridf $WORKDIR/.
+cp $WDIR/$obstf $WORKDIR/.
+cp $WDIR/$maskf $WORKDIR/.
 gf="'"$gridf"'"
 of="'"$obstf"'"
 mf="'"$maskf"'"
