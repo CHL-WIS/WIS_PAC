@@ -74,7 +74,7 @@ def calc_peak_period(ef2d,freq,direc):
 
                     if a != 0:
                         PPF = -0.5*b/a
-            ppp[itime] = 1./(PPF + (-1.0e-10))
+                        ppp[itime] = 1./(PPF + (-1.0e-10))
 
     return peakp, ppp
 
