@@ -1,10 +1,11 @@
 #!/bin/bash
 
 level=$1
-STORM_NAME=$2
-BASE=$3
-BASIN=$4
-UNAME=$5
+gridloc=$2
+STORM_NAME=$3
+BASE=$4
+BASIN=$5
+UNAME=$6
 
 WORKD=$BASE/outdat/$STORM_NAME
 
@@ -41,7 +42,8 @@ cd $lev
 outf="post_outf_"$lev".sh"
 $SHEL/$outf $STORM_NAME $BASE $WORKD/$lev
 #
-python create_field_hdf5.py $yearmon $BASIN $lev $UNAME
+cp $INPD/grids/$gridloc/*$lev* .
+/u/thesser1/anaconda/bin/python /lustre/work1/thesser1/WIS_PAC/python_codes/create_field_hdf5.py $yearmon $BASIN $lev $UNAME
 tarname1=$STORM_NAME"_"$lev"_field.tgz"
 tar -czf $tarname1 wis*.h5
 
@@ -91,10 +93,11 @@ if [ ! -f out_pnt.ww3 ]
     exit 0
 fi
 #cp $outpnt $lev/out_pnt.ww3
-outp="post_ounp_"$lev".sh"
-echo $outp
-$SHEL/$outp $STORM_NAME $BASE $WORKD/$lev
-python ww3_netcdf.py $yearmon $BASIN $lev $UNAME
+#outp="post_ounp_"$lev".sh"
+#echo $outp
+outp="post_ounp.sh"
+$SHEL/$outp $STORM_NAME $BASE $WORKD/$lev $lev
+/u/thesser1/anaconda/bin/python /lustre/work1/thesser1/WIS_PAC/python_codes/ww3_netcdf.py $yearmon $BASIN $lev $UNAME
 tarname2=$STORM_NAME"_"$lev"_point.tgz"
 tar -cvf $tarname2 ST*.h5
 #

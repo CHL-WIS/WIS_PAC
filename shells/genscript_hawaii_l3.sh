@@ -60,5 +60,5 @@ $ -------------------------------------------------------------------- $
 EOF
 #
 #  Run ww3_grid
-$EXED/ww3_grid > ww3_grid_hawaii_l2.out
+$EXED/ww3_grid > ww3_grid_hawaii_l3.out
 

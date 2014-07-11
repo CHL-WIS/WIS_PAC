@@ -7,4 +7,16 @@ do
 fname2=$fname$endname
 mv $fname $fname2
 done
+ls -1 *.ptp > fort.1
+cat fort.1 | while read fname
+do
+fname2=$fname$endname
+mv $fname $fname2
+done
+ls -1 *.pdi > fort.1
+cat fort.1 | while read fname
+do
+fname2=$fname$endname
+mv $fname $fname2
+done
 exit 0
