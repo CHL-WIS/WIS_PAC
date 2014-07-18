@@ -62,4 +62,4 @@ EOF
 
 chmod 760 $WORKDIR/${STORM_NAME}.sh
 #ssh $PBS_O_HOST qsub $WORKDIR/${STORM_NAME}.sh
-#qsub $WORKDIR/${STORM_NAME}.sh
+qsub $WORKDIR/${STORM_NAME}.sh
