@@ -77,14 +77,16 @@ class ww3:
        
         self.lon = np.arange(float(self.longitude[0]),float(self.longitude[1])+self.dlon,self.dlon)
         self.lat = np.arange(float(self.latitude[0]),float(self.latitude[1])+self.dlat,self.dlat)
-        dataset = h5file.create_dataset('longitude',(self.lon.shape),dtype=('f4'))
-        dataset[...] = self.lon
+	self.lon2 = np.linspace(float(self.longitude[0]),float(self.longitude[1]),num=self.nlon)
+	self.lat2 = np.linspace(float(self.latitude[0]),float(self.latitude[1]),num=self.nlat)
+        dataset = h5file.create_dataset('longitude',(self.lon2.shape),dtype=('f4'))
+        dataset[...] = self.lon2
         dataset.attrs['Units'] = 'decimal degree'
-        dataset.attrs['Dimension'] = self.lon.shape
-        dataset = h5file.create_dataset('latitude',(self.lat.shape),dtype=('f4'))
-        dataset[...] = self.lat
+        dataset.attrs['Dimension'] = self.lon2.shape
+        dataset = h5file.create_dataset('latitude',(self.lat2.shape),dtype=('f4'))
+        dataset[...] = self.lat2
         dataset.attrs['Units'] = 'decimal degree'
-        dataset.attrs['Dimension'] = self.lat.shape
+        dataset.attrs['Dimension'] = self.lat2.shape
         
         info = {'longitude':self.longitude,'latitude':self.latitude,'uname':self.uname,'nlon':self.nlon,'nlat':self.nlat,'domain':self.domain,'basin':basinname[basin]}
         wh5.create_field_global_att(h5file,info)
