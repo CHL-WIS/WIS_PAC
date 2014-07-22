@@ -35,10 +35,10 @@ umask 007
 #
 cd $WORKDIR
 
-if [ ! -a $REST/restart.grd1 ]
+if [ ! -a $REST/restart.basin_l1 ]
  then
-   cp $REST/restart.grd* $WORKDIR
-   rm $REST/restart.grd*
+   cp $REST/restart.* $WORKDIR
+   rm $REST/restart.*
 
 fi
 aprun -n 128 $EXED/ww3_multi > ww3_multi.out
