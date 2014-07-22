@@ -9,7 +9,7 @@
 #
 # ---------------------------------------------------------------
 #
-UNAME='Tyler J. Hesser'
+UNAME='TJHesser'
 BASIN='pac'
 BASE=$WORKDIR/WIS_PAC
 OUTD=$BASE/outdat
@@ -157,9 +157,9 @@ mv mod_def.ww3 mod_def.hawaii_l2
 $SHEL/genscript_hawaii_l3.sh $INPF $WORKDIR $EXED
 mv mod_def.ww3 mod_def.hawaii_l3
 #
-rm *.grd *.mask *.obst
+rm *.grd *.mask *.obstr
 $SHEL/genscript_multi.sh $STORM_NAME $WORKDIR
-$SHEL/genscript_sub.sh $STORM_NAME $RUN_NAME $BASE
+$SHEL/genscript_sub.sh $STORM_NAME $RUN_NAME $BASE $BASIN $UNAME
 
 echo $WINDPROC >> $SHEL/donelist
 
