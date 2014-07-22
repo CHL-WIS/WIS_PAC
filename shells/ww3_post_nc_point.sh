@@ -1,11 +1,13 @@
 #!/bin/bash
-
-level=$1
-gridloc=$2
-STORM_NAME=$3
-BASE=$4
-BASIN=$5
-UNAME=$6
+sta=$1
+sto=$2
+setn=$3
+level=$4
+gridloc=$5
+STORM_NAME=$6
+BASE=$7
+BASIN=$8
+UNAME=$9
 
 WORKD=$BASE/outdat/$STORM_NAME
 
@@ -20,14 +22,15 @@ cd $WORKD
 lev=$level
 #cd $WORKD/$lev
 echo $grd
-mkdir $lev
+dirn=$lev"-point"$setn
+mkdir $dirn
 moddef="mod_def."$lev
 outpnt="out_pnt."$lev
 echo $moddef
-cp $moddef $level/mod_def.ww3
-cp $outpnt $level/out_pnt.ww3
-cp *.datesin $level
-cd $lev
+cp $moddef $dirn/mod_def.ww3
+cp $outpnt $dirn/out_pnt.ww3
+cp *.datesin $dirn
+cd $dirn
 # ----------------------------------------------------
 #  Point Analysis
 # ----------------------------------------------------
@@ -40,8 +43,8 @@ if [ ! -f out_pnt.ww3 ]
 fi
 outp="post_ounp.sh"
 print $outp
-$SHEL/$outp $STORM_NAME $BASE $WORKD/$lev $lev
+$SHEL/$outp $STORM_NAME $BASE $WORKD/$dirn $lev $sta $sto 
 /u/thesser1/anaconda/bin/python /lustre/work1/thesser1/WIS_PAC/python_codes/ww3_netcdf.py $yearmon $BASIN $lev $UNAME
-tarname2=$STORM_NAME"_"$lev"_point.tgz"
+tarname2=$STORM_NAME"_"$lev"_point_set"$setn".tgz"
 tar -czf $tarname2 ST*.h5
 mv $WORKD/$lev/*point.tgz $WORKD

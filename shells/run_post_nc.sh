@@ -15,12 +15,25 @@ cat > serial_post.sh << EOF
 
 cd $WORKDIR
 
-(   $SHEL/ww3_post_nc_point.sh  basin_l1 basin $STORM_NAME $BASE $BASIN $UNAME  > ww3_post1.out    ) &
-(   $SHEL/ww3_post_nc_point.sh  westc_l2 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post2.out    ) &
-(   $SHEL/ww3_post_nc_point.sh  westc_l3 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post3.out    ) &
-(   $SHEL/ww3_post_nc_point.sh  cali_l4  cali $STORM_NAME $BASE $BASIN $UNAME > ww3_post4.out    ) &
-(   $SHEL/ww3_post_nc_point.sh  hawaii_l2 hawaii $STORM_NAME $BASE $BASIN $UNAME > ww3_post4.out    ) &
-(   $SHEL/ww3_post_nc_point.sh  hawaii_l3 hawaii  $STORM_NAME $BASE $BASIN $UNAME > ww3_post4.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  1 30 1 basin_l1 basin $STORM_NAME $BASE $BASIN $UNAME  > ww3_post1.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  31 60 2 basin_l1 basin $STORM_NAME $BASE $BASIN $UNAME  > ww3_post1.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  61 90 3 basin_l1 basin $STORM_NAME $BASE $BASIN $UNAME  > ww3_post1.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  91 120 4 basin_l1 basin $STORM_NAME $BASE $BASIN $UNAME  > ww3_post1.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  121 150 5 basin_l1 basin $STORM_NAME $BASE $BASIN $UNAME  > ww3_post1.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  151 180 6 basin_l1 basin $STORM_NAME $BASE $BASIN $UNAME  > ww3_post1.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  1 30 1 westc_l2 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post2.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  31 60 2 westc_l2 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post2.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  61 90 3 westc_l2 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post2.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  91 117 4 westc_l2 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post2.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  1 30 1 westc_l3 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post3.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  31 60 2 westc_l3 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post3.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  61 90 3 westc_l3 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post3.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  91 120 4 westc_l3 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post3.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  121 131 5 westc_l3 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post3.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  1 30 1 cali_l4  cali $STORM_NAME $BASE $BASIN $UNAME > ww3_post4.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  31 54 2 cali_l4  cali $STORM_NAME $BASE $BASIN $UNAME > ww3_post4.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  1 19 1 hawaii_l2 hawaii $STORM_NAME $BASE $BASIN $UNAME > ww3_post4.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  1 15 1 hawaii_l3 hawaii  $STORM_NAME $BASE $BASIN $UNAME > ww3_post4.out    ) &
 (   $SHEL/ww3_post_nc_field.sh  basin_l1 basin $STORM_NAME $BASE $BASIN $UNAME  > ww3_post1.out    ) &
 (   $SHEL/ww3_post_nc_field.sh  westc_l2 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post2.out    ) &
 (   $SHEL/ww3_post_nc_field.sh  westc_l3 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post3.out    ) &
@@ -58,7 +71,7 @@ cat > ${STORM_NAME}_post.sh << EOF
 #
 cd $WORKDIR
 
-aprun -n 1 -d 12 $WORKDIR/serial_post.sh > serial_post.out
+aprun -n 1 -d 25 $WORKDIR/serial_post.sh > serial_post.out
 wait
 
 #
