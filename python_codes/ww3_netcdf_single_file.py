@@ -1,7 +1,7 @@
 import wave_param_calc_sep as wp
 import wis_h5_out as wh5
 import numpy as np
-import getopt, sys, glob
+import getopt, sys
 
 class ww3:
 
@@ -9,7 +9,6 @@ class ww3:
         self.yearmon = yearmon
         self.uname = uname
         basinname = {'pac':'Pacific Ocean','atl':'Atlantic Ocean','gom':'Gulf of Mexico'}
-
         self.read_ww3_spec_netcdf()
         self.read_ww3_dep_netcdf()
         self.read_ww3_ustar_netcdf()
@@ -49,53 +48,34 @@ class ww3:
 
     def read_ww3_spec_netcdf(self):
         from netCDF4 import Dataset
-        import glob
-        fnames = glob.glob('ww3.*' + self.yearmon + '_spec.nc')
-        f = Dataset(fnames[0])
+        f = Dataset('ww3.' + self.yearmon + '_spec.nc')
+        numstat = f.variables['station_name'].shape[0]
+        station = []
+        for nstat in range(numstat):
+            aa = f.variables['station_name'][nstat,:]
+            stat = ''.join(list(aa[~aa.mask].data))
+            station.append(stat)
+
+        self.station = dict((ii, name) for ii,name in enumerate(station))
         self.time = f.variables['time'][:]
         self.freq = f.variables['frequency'][:]
         self.direc = f.variables['direction'][:]
-        station = []
-        self.longitude = np.zeros((len(fnames)))
-        self.latitude = np.zeros((len(fnames)))
-        self.numstation = len(fnames)
-        self.ef2d = np.zeros((self.time.shape[0],len(fnames),self.freq.shape[0],self.direc.shape[0]))
-        for ii,fname in enumerate(fnames):
-            f = Dataset(fname)
-            numstat = f.variables['station_name'].shape[0]
-            aa = f.variables['station_name'][0,:]
-            stat = ''.join(list(aa[~aa.mask].data))
-            station.append(stat)
-            self.longitude[ii] = f.variables['longitude'][0,:]
-            self.latitude[ii] = f.variables['latitude'][0,:]
-            self.ef2d[:,ii,:,:] = f.variables['efth'][:,0,:,:]
-
-        self.station = dict((ii, name) for ii,name in enumerate(station))
-
+        self.longitude = f.variables['longitude'][0,:]
+        self.latitude = f.variables['latitude'][0,:]
+        self.ef2d = f.variables['efth'][:,:,:,:]
 
     def read_ww3_dep_netcdf(self):
         from netCDF4 import Dataset
-        import glob
-        fnames = glob.glob('ww3_dep.*' + self.yearmon + '_tab.nc')
-        self.wndspd = np.zeros((self.time.shape[0],self.numstation))
-        self.wnddir = np.zeros((self.time.shape[0],self.numstation))
-        self.depth = np.zeros((self.numstation))
-        for ii, fname in enumerate(fnames):
-            f = Dataset(fname)
-            self.wndspd[:,ii] = f.variables['wnd'][:,0]
-            self.wnddir[:,ii] = f.variables['wnddir'][:,0]
-            self.depth[ii] = f.variables['dpt'][0,0]
+        f = Dataset('ww3_dep.' + self.yearmon + '_tab.nc')
+        self.wndspd = f.variables['wnd'][:,:]
+        self.wnddir = f.variables['wnddir'][:,:]
+        self.depth = f.variables['dpt'][0,:]
 
     def read_ww3_ustar_netcdf(self):
         from netCDF4 import Dataset
-        import glob
-        fnames = glob.glob('ww3_ust.*' + self.yearmon + '_tab.nc')
-        self.ustar = np.zeros((self.time.shape[0],self.numstation))
-        self.cd = np.zeros((self.time.shape[0],self.numstation))
-        for ii, fname in enumerate(fnames):
-            f = Dataset(fname)
-            self.ustar[:,ii] = f.variables['ust'][:,0]
-            self.cd[:,ii] = f.variables['cd'][:,0]
+        f = Dataset('ww3_ust.' + self.yearmon + '_tab.nc')
+        self.ustar = f.variables['ust'][:,:]
+        self.cd = f.variables['cd'][:,:]
 
     def time2date(self):
         import datetime as DT
