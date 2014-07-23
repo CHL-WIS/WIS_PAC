@@ -16,7 +16,6 @@ OUTD=$BASE/outdat
 INPF=$BASE/inputfiles
 SHEL=$BASE/shells
 WIND=$INPF/winds/
-#WIND=$BASE/winds/CFSR
 FCOD=$BASE/fcode
 EXED=$BASE/exe
 #
@@ -26,7 +25,6 @@ EXED=$BASE/exe
 #
 cd $WIND
 ls -1 *PacDomain.win > $SHEL/windlist.tmp
-#ls -1 *.win > $SHEL/windlist.tmp
 #
 # Go to shells directory and find winds to run
 #
@@ -68,19 +66,8 @@ File="stormlist"
 exec 3<&0
 exec 0<"$File"
 read STORM_NAME2
-#STN=`echo $STORM_NAME2 | cut -c1-4 `
 STN=`echo $STORM_NAME2 | cut -c1-6 `
-#year=`echo $STORM_NAME2 | cut -c1`
 STORM_NAME="${STN}_WIS_PAC_WW3_OWI_ST4"
-#if [ $year == '9' ] 
-# then
-#  STORM_NAME="19${STN}_WIS_ATL_WW3_OWI_ST4"
-#elif [ $year == '8' ]
-# then
-#  STORM_NAME="19${STN}_WIS_ATL_WW3_OWI_ST4"
-#else
-#  STORM_NAME="20${STN}_WIS_ATL_WW3_OWI_ST4"
-#fi
 RUN_NAME=`echo $STORM_NAME | cut -c1-6 `
 WORKDIR=`echo $OUTD/$STORM_NAME `
 if [ ! -d $WORKDIR ]
@@ -92,8 +79,6 @@ else
 fi
 #
 WINDPROC=`echo ${STORM_NAME2}.win `
-#WINDPROC=`echo ${STORM_NAME2}.WIN `
-#WINDPROC=`echo ${STORM_NAME2}.win `
 #
 if [ -f ${WIND}/${WINDPROC} ]
 then

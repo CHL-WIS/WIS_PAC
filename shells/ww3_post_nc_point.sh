@@ -20,6 +20,10 @@ yearmon=`echo $STORM_NAME | cut -c1-6`
 
 cd $WORKD
 lev=$level
+if [ ! -d $lev ]
+  then
+    mkdir $lev
+fi
 #cd $WORKD/$lev
 echo $grd
 dirn=$lev"-point"$setn
@@ -45,6 +49,7 @@ outp="post_ounp.sh"
 print $outp
 $SHEL/$outp $STORM_NAME $BASE $WORKD/$dirn $lev $sta $sto 
 /u/thesser1/anaconda/bin/python /lustre/work1/thesser1/WIS_PAC/python_codes/ww3_netcdf.py $yearmon $BASIN $lev $UNAME
-tarname2=$STORM_NAME"_"$lev"_point_set"$setn".tgz"
-tar -czf $tarname2 ST*.h5
-mv $WORKD/$lev/*point.tgz $WORKD
+mv $WORKD/$dirn/*.h5 $WORKD/$lev
+#tarname2=$STORM_NAME"_"$lev"_point_set"$setn".tgz"
+#tar -czf $tarname2 ST*.h5
+#mv $WORKD/$dirn/*point.tgz $WORKD/$lev
