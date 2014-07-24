@@ -11,7 +11,7 @@ class ww3:
         basinname = {'pac':'Pacific Ocean','atl':'Atlantic Ocean','gom':'Gulf of Mexico'}
 
         self.read_ww3_spec_netcdf()
-        self.read_ww3_dep_netcdf()
+#        self.read_ww3_dep_netcdf()
         self.read_ww3_ustar_netcdf()
         self.time2date()
         self.results = []
@@ -58,7 +58,10 @@ class ww3:
         station = []
         self.longitude = np.zeros((len(fnames)))
         self.latitude = np.zeros((len(fnames)))
+        self.depth = np.zeros((len(fnames)))
         self.numstation = len(fnames)
+        self.wndspd = np.zeros((self.time.shape[0],self.numstation))
+        self.wnddir = np.zeros((self.time.shape[0],self.numstation))
         self.ef2d = np.zeros((self.time.shape[0],len(fnames),self.freq.shape[0],self.direc.shape[0]))
         for ii,fname in enumerate(fnames):
             f = Dataset(fname)
@@ -69,6 +72,9 @@ class ww3:
             self.longitude[ii] = f.variables['longitude'][0,:]
             self.latitude[ii] = f.variables['latitude'][0,:]
             self.ef2d[:,ii,:,:] = f.variables['efth'][:,0,:,:]
+            self.wndspd[:,ii] = f.variables['wnd'][:,0]
+            self.wnddir[:,ii] = f.variables['wnddir'][:,0]
+            self.depth[ii] = f.variables['dpt'][0,0]
 
         self.station = dict((ii, name) for ii,name in enumerate(station))
 

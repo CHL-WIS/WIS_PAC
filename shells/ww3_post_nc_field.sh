@@ -37,4 +37,5 @@ cp $INPD/grids/$gridloc/*$lev* .
 tarname1=$STORM_NAME"_"$lev"_field.tgz"
 tar -czf $tarname1 wis*.h5
 mv $tarname1 $WORKD
-
+cd $WORKD
+rm -rf $dirn
