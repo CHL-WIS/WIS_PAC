@@ -32,8 +32,8 @@ cd $WORKDIR
 (   $SHEL/ww3_post_nc_point.sh  121 131 5 westc_l3 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post3.out    ) &
 (   $SHEL/ww3_post_nc_point.sh  1 30 1 cali_l4  cali $STORM_NAME $BASE $BASIN $UNAME > ww3_post4.out    ) &
 (   $SHEL/ww3_post_nc_point.sh  31 54 2 cali_l4  cali $STORM_NAME $BASE $BASIN $UNAME > ww3_post4.out    ) &
-(   $SHEL/ww3_post_nc_point.sh  1 18 1 hawaii_l2 hawaii $STORM_NAME $BASE $BASIN $UNAME > ww3_post4.out    ) &
-(   $SHEL/ww3_post_nc_point.sh  1 10 1 hawaii_l3 hawaii  $STORM_NAME $BASE $BASIN $UNAME > ww3_post4.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  ALL ALL 1 hawaii_l2 hawaii $STORM_NAME $BASE $BASIN $UNAME > ww3_post4.out    ) &
+(   $SHEL/ww3_post_nc_point.sh  ALL ALL 1 hawaii_l3 hawaii  $STORM_NAME $BASE $BASIN $UNAME > ww3_post4.out    ) &
 (   $SHEL/ww3_post_nc_field.sh  basin_l1 basin $STORM_NAME $BASE $BASIN $UNAME  > ww3_post1.out    ) &
 (   $SHEL/ww3_post_nc_field.sh  westc_l2 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post2.out    ) &
 (   $SHEL/ww3_post_nc_field.sh  westc_l3 westc $STORM_NAME $BASE $BASIN $UNAME > ww3_post3.out    ) &
