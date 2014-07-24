@@ -144,6 +144,9 @@ def calc_wave_direction(ef2d,freq,direc):
         if thq[itime] < 0.:
             thq[itime] = thq[itime] + 2.0*np.pi
         thq[itime] = thq[itime]*180./np.pi
+        thq[itime] = thq[itime] + 180.0
+        if thq[itime] >= 360.0:
+            thq[itime] = thq[itime] - 360.0
 
         sprdtmp = np.array(np.sum(temp))
         if np.abs(ci) < 0.1e-15:
