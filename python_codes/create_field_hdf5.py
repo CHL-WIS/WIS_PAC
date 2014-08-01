@@ -73,6 +73,11 @@ class ww3:
             dataset.attrs['Dimension'] = dataf.shape
             dataset.attrs['Multiplication Factor'] = header['Mfac']
 
+#            dmax,dmean = max_mean(dataf)
+#            dataset = h5file.create_dataset(key + '_max',(dmax.shape),dtype=('f4'))
+#            dataset[...] = dmax
+#            dataset = h5file.create_dataset(key + '_mean',(dmean.shape),dtype='f4'))
+
         wh5.create_field_var_att(h5file,self.varname.keys())
        
         self.lon = np.arange(float(self.longitude[0]),float(self.longitude[1])+self.dlon,self.dlon)
@@ -135,6 +140,28 @@ class ww3:
         a = np.array(ff.read().split(),dtype='int')
         self.xobstr = a[:a.size/2].reshape(self.nlat,self.nlon)
         self.yobstr = a[a.size/2:].reshape(self.nlat,self.nlon)
+
+    def max_mean(self,dataf,mfac):
+        import numpy as np
+        data = np.array(dataf)*mfac
+        dmax = np.zeros((self.mask.shape))
+        dmean = np.zeros((self.mask.shape))
+
+        for jlat in range(self.lat.shape[0]):
+            for ilon in range(self.lon.shape[0]):
+                idx = data[:,jlat,ilon] >= 0
+                temp = data[idx,jlat,ilon]
+                if not temp.any():
+                    if self.mask[jlat,ilon] == 0:
+                        dmax[jlat,ilon] = -1
+                        dmean[jlat,ilon] = -1
+                    else:
+                        dmax[jlat,ilon] = 0
+                        dmean[jlat,ilon] = 0
+                else:
+                    dmax[jlat,ilon] = np.max(temp)
+                    dmean[jlat,ilon] = np.mean(temp)
+        return dmax, dmean
 
 if __name__ == "__main__":
     opts, args = getopt.getopt(sys.argv[1:],"h",["help"])

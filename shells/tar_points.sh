@@ -10,4 +10,6 @@ levdir=$WKDIR/$lev
 cd $levdir
 tarname=$STORM_NAME"_"$lev"_points.tgz"
 tar -czf $tarname *.h5
-mv $levdir/*.tgz $WKDIR    
+mv $levdir/*.tgz $WKDIR
+cd $WKDIR
+rm -rf $levdir    
