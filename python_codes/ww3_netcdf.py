@@ -6,9 +6,10 @@ import getopt, sys, glob
 
 class ww3:
 
-    def __init__(self,yearmon,basin,uname):
+    def __init__(self,yearmon,basin):
         self.yearmon = yearmon
-        self.uname = uname
+        self.year = yearmon[:4]
+        self.mon = yearmon[4:]
         basinname = {'pac':'Pacific Ocean','atl':'Atlantic Ocean','gom':'Gulf of Mexico'}
 
         self.read_ww3_spec_netcdf()
@@ -62,7 +63,8 @@ class ww3:
                         'wavhs_swell':wavhs_swell,'wavtp_swell':wavtp_swell,'wavtpp_swell':wavtpp_swell,'wavtm_swell':wavtm_swell, \
                         'wavtm1_swell':wavtm1_swell,'wavtm2_swell':wavtm2_swell,'wavdir_swell':wavdir_swell,'wavspr_swell':wavspr_swell}
             info = {'station':stat,'longitude':self.longitude[ii],'latitude':self.latitude[ii],'outtype':outtype,'depth':self.depth[ii], \
-                        'uname':self.uname,'basin':basinname[basin],'outshape':outshape}
+                        'basin':basinname[basin],'outshape':outshape, \
+                        'timestart':self.timestart,'timeend':self.timeend,'year':self.year,'month':self.mon}
             dd = {'info':info,'data':data}
             self.results.append(dd)
 	
@@ -132,7 +134,8 @@ class ww3:
         self.pytime = np.zeros((self.time.size,1))
         self.dattime = np.zeros((self.time.size,6))
         for ii,itime in enumerate(self.time):
-            self.pytime[ii] = itime + DT.datetime.toordinal(DT.date(1990,01,01))
+            self.pytime[ii] = int((itime + DT.datetime.toordinal(DT.date(1990,01,01)) -  \
+                         DT.datetime.toordinal(DT.datetime(1970,01,01)))*(24.*3600.))
             date = DT.datetime.fromordinal(int(itime) + DT.datetime.toordinal(DT.date(1990,01,01)))
             tt = itime - int(itime)
             hour = int(round(tt*24))
@@ -141,7 +144,9 @@ class ww3:
             time = DT.time(hour, minu, secs)
             dtime = DT.datetime.combine(date,time)
             self.dattime[ii,:] = dtime.year,dtime.month,dtime.day,dtime.hour,dtime.minute,dtime.second
-
+            if ii == 0:
+                self.timestart = dtime
+        self.timeend = dtime
 
     def _repr_pretty(self):
         """
@@ -165,5 +170,4 @@ if __name__ == "__main__":
     opts, args = getopt.getopt(sys.argv[1:],"h",["help"])
     yearmon = args[0]
     basin = args[1]
-    uname = args[2]
-    ww3(yearmon,basin,uname)
+    ww3(yearmon,basin)

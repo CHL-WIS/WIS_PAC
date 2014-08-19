@@ -7,9 +7,8 @@ import wis_nc_out as wnc
 #from write_atl_att import write_field_attr
 
 class ww3:
-    def __init__(self,yearmon,basin,domain,uname):
+    def __init__(self,yearmon,basin,domain):
         self.yearmon = yearmon
-        self.uname = uname
         self.domain = domain
         self.varname = {'wavhs':'hs','wavtp':'fp','wavdir':'dir','wavspr':'spr','wavhs_wndsea':'phs_sea','wavtp_wndsea':'ptp_sea','wavdir_wndsea':'pdi_sea','wavhs_swell1':'phs_sw1','wavtp_swell1':'ptp_sw1','wavdir_swell1':'pdi_sw1','wavhs_swell2':'phs_sw2','wavtp_swell2':'ptp_sw2','wavdir_swell2':'pdi_sw2','wnd_u':'wnd','wnd_v':'wnd'}
         basinname = {'pac':'Pacific Ocean','atl':'Atlantic Ocean','gom':'Gulf of Mexico'}
@@ -22,10 +21,10 @@ class ww3:
                 self.tt = tt
                 self.time2date()
                 ncfile.createDimension('time',len(self.tt))
-                dataset = ncfile.createVariable('time','f8',('time',))
+                dataset = ncfile.createVariable('time','i8',('time',))
                 dataset[:] = self.pytime
-                dataset.long_name = 'Time in Days since 0001-01-01 00:00:00'
-                dataset.units = 'day'
+                dataset.long_name = 'Time'
+                dataset.units = 'Seconds since 1970-01-01 00:00:00'
                 dataset.dimension = self.pytime.shape
                 ncfile.createDimension('date',6)
                 dataset = ncfile.createVariable('datetime','i4',('time','date',))
@@ -73,12 +72,13 @@ class ww3:
                 dataset.dimension = self.yobstr.shape
 
 
-            print key
             dataset = ncfile.createVariable(key,'i4',('time','lat','lon',))
             dataset[:] = dataf
             dataset.dimension = dataf.shape
             dataset.mfactor = header['Mfac']
-
+            longn, units = wnc.create_field_var_att(key)
+            dataset.long_name = longn
+            dataset.units = units
 #            dmax,dmean = max_mean(dataf)
 #            dataset = h5file.create_dataset(key + '_max',(dmax.shape),dtype=('f4'))
 #            dataset[...] = dmax
@@ -94,13 +94,17 @@ class ww3:
         dataset[:] = self.lon2
         dataset.units = 'decimal degree'
         dataset.dimension = self.lon2.shape
+        lonres = self.lon2[1] - self.lon2[0]
         dataset = ncfile.createVariable('latitude','f4',('lat',))
         dataset[:] = self.lat2
         dataset.units = 'decimal degree'
         dataset.dimension = self.lat2.shape
+        latres = self.lat2[1] - self.lat2[0]
         
-        info = {'longitude':self.longitude,'latitude':self.latitude,'uname':self.uname,'nlon':self.nlon,'nlat':self.nlat,'domain':self.domain,'basin':basinname[basin]}
-      #  wh5.create_field_global_att(h5file,info)
+        info = {'longitude':self.longitude,'latitude':self.latitude,'nlon':self.nlon,'nlat':self.nlat, \
+                    'domain':self.domain,'basin':basinname[basin],'lonres':lonres,'latres':latres, \
+                    'timestart':self.timestart,'timeend':self.timeend}
+        wnc.create_field_global_att(ncfile,info)
         ncfile.close()
         
         
@@ -117,9 +121,11 @@ class ww3:
                 dtime = DT.datetime(int(stdate[:4]),int(stdate[4:6]),int(stdate[6:8]),0,0,0)
             else:
                 dtime = DT.datetime(int(stdate[:4]),int(stdate[4:6]),int(stdate[6:8]),int(sttime[:2]),int(sttime[2:4]),int(sttime[4:6]))
-            self.pytime[ii] = DT.datetime.toordinal(dtime) + dtime.hour/24. + dtime.minute/(24.*60.) + dtime.second/(3600.*24.)
+            self.pytime[ii] = int((DT.datetime.toordinal(dtime) - DT.datetime.toordinal(DT.datetime(1970,01,01)) \
+                                   + dtime.hour/24. + dtime.minute/(24.*60.) + dtime.second/(3600.*24.))*(24.*3600.))
             self.dattime[ii,:] = dtime.year,dtime.month,dtime.day,dtime.hour,dtime.minute,dtime.second
-
+            self.timestart = dtime
+        self.timeend = dtime
 
 
     def read_grid(self):
@@ -174,7 +180,6 @@ if __name__ == "__main__":
     yearmon = args[0]
     basin = args[1]
     domain = args[2]
-    uname = args[3]
-    ww3(yearmon,basin,domain,uname)
+    ww3(yearmon,basin,domain)
 
         
