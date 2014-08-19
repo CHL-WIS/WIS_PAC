@@ -9,7 +9,7 @@ WKDIR=$BASE/outdat/$STORM_NAME/
 levdir=$WKDIR/$lev
 cd $levdir
 tarname=$STORM_NAME"_"$lev"_points.tgz"
-tar -czf $tarname *.h5
+tar -czf $tarname *.nc
 mv $levdir/*.tgz $WKDIR
 cd $WKDIR
 rm -rf $levdir    
