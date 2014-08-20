@@ -22,7 +22,7 @@ cat > ${STORM_NAME}.sh << EOF
 #PBS -j oe
 #PBS -o $RUN_NAME.oe
 #PBS -m abe
-#PBS -M tyler.hesser@usace.army.mil
+#PBS -M alan.cialone@usace.army.mil
 
 umask 007
 #

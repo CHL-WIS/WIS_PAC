@@ -67,7 +67,7 @@ cat > ${STORM_NAME}_post.sh << EOF
 #PBS -q standard
 #PBS -A ERDCV03995SHS
 #PBS -l select=1:ncpus=32:mpiprocs=32
-#PBS -l walltime=01:30:00
+#PBS -l walltime=01:45:00
 #PBS -j oe
 #PBS -o ${RUN_NAME}_post.oe
 #PBS -m abe

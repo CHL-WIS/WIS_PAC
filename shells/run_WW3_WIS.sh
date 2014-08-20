@@ -9,7 +9,7 @@
 #
 # ---------------------------------------------------------------
 #
-UNAME='TJHesser'
+UNAME='AlCialone'
 BASIN='pac'
 BASE=$WORKDIR/WIS_PAC
 OUTD=$BASE/outdat
