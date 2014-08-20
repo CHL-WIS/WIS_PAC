@@ -137,7 +137,8 @@ class ww3:
             self.pytime[ii] = int((itime + DT.datetime.toordinal(DT.date(1990,01,01)) -  \
                          DT.datetime.toordinal(DT.datetime(1970,01,01)))*(24.*3600.))
             date = DT.datetime.fromordinal(int(itime) + DT.datetime.toordinal(DT.date(1990,01,01)))
-            tt = itime - int(itime)
+            t = itime + DT.datetime.toordinal(DT.date(1990,01,01))
+            tt = t - int(t)
             hour = int(round(tt*24))
             minu = int(round(tt*24*60) - hour*60)
             secs = int(round(tt*24*60*60) - hour*3600 - minu*60)

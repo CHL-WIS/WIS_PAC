@@ -50,7 +50,7 @@ $SHEL/$outp $STORM_NAME $BASE $WORKD/$dirn $lev $sta $sto
 /u/thesser1/anaconda/bin/python /lustre/work1/thesser1/WIS_PAC/python_codes/ww3_netcdf.py $yearmon $BASIN $lev
 mv $WORKD/$dirn/ST*.nc $WORKD/$lev
 cd $WORKD
-rm -rf $dirn
+#rm -rf $dirn
 #tarname2=$STORM_NAME"_"$lev"_point_set"$setn".tgz"
 #tar -czf $tarname2 ST*.h5
 #mv $WORKD/$dirn/*point.tgz $WORKD/$lev

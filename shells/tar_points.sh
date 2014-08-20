@@ -12,4 +12,4 @@ tarname=$STORM_NAME"_"$lev"_points.tgz"
 tar -czf $tarname *.nc
 mv $levdir/*.tgz $WKDIR
 cd $WKDIR
-rm -rf $levdir    
+#rm -rf $levdir    
