@@ -11,7 +11,7 @@ restname=`ls -tr restart* | tail -6 `
 cp $restname $REST
 
 tarname=$STORM_NAME-rest.tgz
-tar -czf $tarname $restname old-restart.*
+tar -czf $tarname $restname old-restart.* nest.*
 
 mv $REST/*.basin_l1 $REST/restart.basin_l1
 mv $REST/*.westc_l2 $REST/restart.westc_l2

@@ -1,13 +1,15 @@
 import wave_param_calc_sep as wp
 import wis_h5_out as wh5
+import wis_nc_out as wnc
 import numpy as np
 import getopt, sys, glob
 
 class ww3:
 
-    def __init__(self,yearmon,basin,uname):
+    def __init__(self,yearmon,basin):
         self.yearmon = yearmon
-        self.uname = uname
+        self.year = yearmon[:4]
+        self.mon = yearmon[4:]
         basinname = {'pac':'Pacific Ocean','atl':'Atlantic Ocean','gom':'Gulf of Mexico'}
 
         self.read_ww3_spec_netcdf()
@@ -15,8 +17,21 @@ class ww3:
         self.read_ww3_ustar_netcdf()
         self.time2date()
         self.results = []
-        outtype = {'time':'f8','datetime':'int','wavhs':'f4','wavtp':'f4','wavtpp':'f4','wavtm':'f4','wavtm1':'f4','wavtm2':'f4','wavdir':'f4','wavspr':'f4','frequency':'f4','direction':'f4','ef2d':'f4','wndspd':'f4','wnddir':'f4','ustar':'f4','cd':'f4','ef2d_swell':'f4','ef2d_wndsea':'f4','wavhs_wndsea':'f4','wavtp_wndsea':'f4','wavtpp_wndsea':'f4','wavtm_wndsea':'f4','wavtm1_wndsea':'f4','wavtm2_wndsea':'f4','wavdir_wndsea':'f4','wavspr_wndsea':'f4','wavhs_swell':'f4','wavtp_swell':'f4','wavtpp_swell':'f4','wavtm_swell':'f4','wavtm1_swell':'f4','wavtm2_swell':'f4','wavdir_swell':'f4','wavspr_swell':'f4'}
-
+        outtype = {'time':'f8','datetime':'int','wavhs':'f4','wavtp':'f4','wavtpp':'f4','wavtm':'f4','wavtm1':'f4','wavtm2':'f4', \
+                       'wavdir':'f4','wavspr':'f4','frequency':'f4','direction':'f4','ef2d':'f4','wndspd':'f4','wnddir':'f4','ustar':'f4', \
+                       'cd':'f4','ef2d_swell':'f4','ef2d_wndsea':'f4','wavhs_wndsea':'f4','wavtp_wndsea':'f4','wavtpp_wndsea':'f4', \
+                       'wavtm_wndsea':'f4','wavtm1_wndsea':'f4','wavtm2_wndsea':'f4','wavdir_wndsea':'f4','wavspr_wndsea':'f4','wavhs_swell':'f4', \
+                       'wavtp_swell':'f4','wavtpp_swell':'f4','wavtm_swell':'f4','wavtm1_swell':'f4','wavtm2_swell':'f4','wavdir_swell':'f4', \
+                       'wavspr_swell':'f4'}
+        outshape = {'time':'time','datetime':{0:'time',1:'date'},'wavhs':'time','wavtp':'time','wavtpp':'time', \
+                        'wavtm':'time','wavtm1':'time','wavtm2':'time','wavdir':'time','wavspr':'time', \
+                        'frequency':'freq','direction':'direc','ef2d':{0:'time',1:'freq',2:'direc'},'wndspd':'time', \
+                        'wnddir':'time','ustar':'time','cd':'time','ef2d_swell':{0:'time',1:'freq',2:'direc'}, \
+                        'ef2d_wndsea':{0:'time',1:'freq',2:'direc'},'wavhs_wndsea':'time','wavtp_wndsea':'time', \
+                        'wavtpp_wndsea':'time','wavtm_wndsea':'time','wavtm1_wndsea':'time','wavtm2_wndsea':'time', \
+                        'wavdir_wndsea':'time','wavspr_wndsea':'time','wavhs_swell':'time','wavtp_swell':'time', \
+                        'wavtpp_swell':'time','wavtm_swell':'time','wavtm1_swell':'time','wavtm2_swell':'time', \
+                        'wavdir_swell':'time','wavspr_swell':'time'}
         for ii,stat in self.station.items():
             ef = self.ef2d[:,ii,:,:].reshape(len(self.time),len(self.freq),len(self.direc))
             wavhs = wp.calc_wvht(ef,self.freq,self.direc)
@@ -40,12 +55,21 @@ class ww3:
             wavdir_swell,wavspr_swell = wp.calc_wave_direction(efswell,self.freq,self.direc)
 
 
-            data = {'time':self.pytime,'datetime':self.dattime,'wavhs':wavhs,'wavtp':wavtp,'wavtpp':wavtpp,'wavtm':wavtm,'wavtm1':wavtm1,'wavtm2':wavtm2,'wavdir':wavdir,'wavspr':wavspr,'frequency':np.array(self.freq),'direction':np.array(self.direc),'ef2d':np.array(ef),'wndspd':self.wndspd[:,ii],'wnddir':self.wnddir[:,ii],'ustar':self.ustar[:,ii],'cd':self.cd[:,ii],'ef2d_swell':efswell,'ef2d_wndsea':efwndsea,'wavhs_wndsea':wavhs_wndsea,'wavtp_wndsea':wavtp_wndsea,'wavtpp_wndsea':wavtpp_wndsea,'wavtm_wndsea':wavtm_wndsea,'wavtm1_wndsea':wavtm1_wndsea,'wavtm2_wndsea':wavtm2_wndsea,'wavdir_wndsea':wavdir_wndsea,'wavspr_wndsea':wavspr_wndsea,'wavhs_swell':wavhs_swell,'wavtp_swell':wavtp_swell,'wavtpp_swell':wavtpp_swell,'wavtm_swell':wavtm_swell,'wavtm1_swell':wavtm1_swell,'wavtm2_swell':wavtm2_swell,'wavdir_swell':wavdir_swell,'wavspr_swell':wavspr_swell}
-            info = {'station':stat,'longitude':self.longitude[ii],'latitude':self.latitude[ii],'outtype':outtype,'depth':self.depth[ii],'uname':self.uname,'basin':basinname[basin]}
+            data = {'time':self.pytime,'datetime':self.dattime,'wavhs':wavhs,'wavtp':wavtp,'wavtpp':wavtpp,'wavtm':wavtm,'wavtm1':wavtm1,'wavtm2':wavtm2,'wavdir':wavdir, \
+                        'wavspr':wavspr,'frequency':np.array(self.freq),'direction':np.array(self.direc),'ef2d':np.array(ef),'wndspd':self.wndspd[:,ii], \
+                        'wnddir':self.wnddir[:,ii],'ustar':self.ustar[:,ii],'cd':self.cd[:,ii],'ef2d_swell':efswell,'ef2d_wndsea':efwndsea, \
+                        'wavhs_wndsea':wavhs_wndsea,'wavtp_wndsea':wavtp_wndsea,'wavtpp_wndsea':wavtpp_wndsea,'wavtm_wndsea':wavtm_wndsea, \
+                        'wavtm1_wndsea':wavtm1_wndsea,'wavtm2_wndsea':wavtm2_wndsea,'wavdir_wndsea':wavdir_wndsea,'wavspr_wndsea':wavspr_wndsea, \
+                        'wavhs_swell':wavhs_swell,'wavtp_swell':wavtp_swell,'wavtpp_swell':wavtpp_swell,'wavtm_swell':wavtm_swell, \
+                        'wavtm1_swell':wavtm1_swell,'wavtm2_swell':wavtm2_swell,'wavdir_swell':wavdir_swell,'wavspr_swell':wavspr_swell}
+            info = {'station':stat,'longitude':self.longitude[ii],'latitude':self.latitude[ii],'outtype':outtype,'depth':self.depth[ii], \
+                        'basin':basinname[basin],'outshape':outshape, \
+                        'timestart':self.timestart,'timeend':self.timeend,'year':self.year,'month':self.mon}
             dd = {'info':info,'data':data}
             self.results.append(dd)
 	
-            wh5.write_stat_h5(self.results[ii])
+    #        wh5.write_stat_h5(self.results[ii])
+            wnc.write_stat_nc(self.results[ii])
 
     def read_ww3_spec_netcdf(self):
         from netCDF4 import Dataset
@@ -110,16 +134,20 @@ class ww3:
         self.pytime = np.zeros((self.time.size,1))
         self.dattime = np.zeros((self.time.size,6))
         for ii,itime in enumerate(self.time):
-            self.pytime[ii] = itime + DT.datetime.toordinal(DT.date(1990,01,01))
+            self.pytime[ii] = int((itime + DT.datetime.toordinal(DT.date(1990,01,01)) -  \
+                         DT.datetime.toordinal(DT.datetime(1970,01,01)))*(24.*3600.))
             date = DT.datetime.fromordinal(int(itime) + DT.datetime.toordinal(DT.date(1990,01,01)))
-            tt = itime - int(itime)
+            t = itime + DT.datetime.toordinal(DT.date(1990,01,01))
+            tt = t - int(t)
             hour = int(round(tt*24))
             minu = int(round(tt*24*60) - hour*60)
             secs = int(round(tt*24*60*60) - hour*3600 - minu*60)
             time = DT.time(hour, minu, secs)
             dtime = DT.datetime.combine(date,time)
             self.dattime[ii,:] = dtime.year,dtime.month,dtime.day,dtime.hour,dtime.minute,dtime.second
-
+            if ii == 0:
+                self.timestart = dtime
+        self.timeend = dtime
 
     def _repr_pretty(self):
         """
@@ -143,5 +171,4 @@ if __name__ == "__main__":
     opts, args = getopt.getopt(sys.argv[1:],"h",["help"])
     yearmon = args[0]
     basin = args[1]
-    uname = args[2]
-    ww3(yearmon,basin,uname)
+    ww3(yearmon,basin)
