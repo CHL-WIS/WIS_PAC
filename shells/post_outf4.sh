@@ -35,16 +35,16 @@ $ -----------------------------------------
   $startd1 $stcf 3600 1000
 $
   N
-  PHS PTP PDIR SPR
+  PHS PTP PDIR
 $
-  3 2
- 0 1000 0 1000 1 1
+  3 1
+  0 1000 0 1000 1 1
 $  0 381 0 257 1 1
 $
 $ End of input file
 EOF
 
-$EXED/ww3_outf > ww3_outf3_$level.out
+$EXED/ww3_outf > ww3_outf2_$level.out
 wait
-$SHEL/phs_conv.sh _sw2
+$SHEL/phs_conv.sh _sw1
 wait

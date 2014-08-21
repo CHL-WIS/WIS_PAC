@@ -32,19 +32,19 @@ stcf=$stc$ste
 cat > ww3_outf.inp << EOF
 $ WAVEWATCH III Grid output post-processing
 $ -----------------------------------------
-  $startd1 $stcf 3600 1000
+  $startd1 $stcf  3600 1000
 $
   N
-  PHS PTP PDIR DIR
+  PHS PTP PDIR
 $
-  3 1
+  3 0
   0 1000 0 1000 1 1
 $  0 381 0 257 1 1
 $
 $ End of input file
 EOF
 
-$EXED/ww3_outf > ww3_outf2_$level.out
+$EXED/ww3_outf > ww3_outf1_$level.out
 wait
-$SHEL/phs_conv.sh _sw1
+$SHEL/phs_conv.sh _sea
 wait
