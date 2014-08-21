@@ -27,10 +27,16 @@ else
     dirn=$lev"-field"$UNIT
     outf="post_outf"$UNIT".sh"
     dirsave=$lev"-field"
-    mkdir $WORKD/$dirsave
+    if [ ! -d $WORKD/$dirsave ]
+    then 
+        mkdir $WORKD/$dirsave
+    fi
 fi
 
-mkdir $dirn
+if [ ! -d $dirn ]
+then 
+   mkdir $dirn
+fi
 moddef="mod_def."$lev
 outgrd="out_grd."$lev
 #outpnt="out_pnt."$lev

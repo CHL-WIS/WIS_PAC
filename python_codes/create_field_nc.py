@@ -13,7 +13,9 @@ class ww3:
         self.varname = {'wavhs':'hs','wavtp':'fp','wavdir':'dir','wavspr':'spr','wavhs_wndsea':'phs_sea','wavtp_wndsea':'ptp_sea','wavdir_wndsea':'pdi_sea','wavhs_swell1':'phs_sw1','wavtp_swell1':'ptp_sw1','wavdir_swell1':'pdi_sw1','wavhs_swell2':'phs_sw2','wavtp_swell2':'ptp_sw2','wavdir_swell2':'pdi_sw2','wnd_u':'wnd','wnd_v':'wnd'}
         basinname = {'pac':'Pacific Ocean','atl':'Atlantic Ocean','gom':'Gulf of Mexico'}
         ncfn = 'wis_' + basin + '_' + domain + '_' + yearmon + '.nc'
+        mmfn = 'wis_' + basin + '_' + domain + '_' + yearmon + 'max_mean.nc'
         ncfile = Dataset(ncfn,'w')
+        mmfile = Dataset(mmfn,'w')
        # write_top_level_att(h5fname)
         for key in self.varname.keys():
             tt, header, dataf = rfww3.read_fields_ww3('./',self.varname[key],key)
@@ -79,10 +81,11 @@ class ww3:
             longn, units = wnc.create_field_var_att(key)
             dataset.long_name = longn
             dataset.units = units
-#            dmax,dmean = max_mean(dataf)
-#            dataset = h5file.create_dataset(key + '_max',(dmax.shape),dtype=('f4'))
-#            dataset[...] = dmax
-#            dataset = h5file.create_dataset(key + '_mean',(dmean.shape),dtype='f4'))
+
+            dmax,dmean = max_mean(dataf)
+            dataset = mmfile.create_dataset(key + '_max',(dmax.shape),dtype=('f4'))
+            dataset[...] = dmax
+            dataset = h5file.create_dataset(key + '_mean',(dmean.shape),dtype='f4'))
 
       #  wh5.create_field_var_att(h5file,self.varname.keys())
        
@@ -105,7 +108,9 @@ class ww3:
                     'domain':self.domain,'basin':basinname[basin],'lonres':lonres,'latres':latres, \
                     'timestart':self.timestart,'timeend':self.timeend}
         wnc.create_field_global_att(ncfile,info)
+        wnc.create_field_global_att(mmfile,info)
         ncfile.close()
+        mmfile.close()
         
         
     def time2date(self):

@@ -35,7 +35,7 @@ $ -----------------------------------------
   $startd1 $stcf  3600 1000
 $
   N
-  PHS PTP PDIR
+  DIR SPR PNR
 $
   3 0
   0 1000 0 1000 1 1
@@ -46,5 +46,5 @@ EOF
 
 $EXED/ww3_outf > ww3_outf1_$level.out
 wait
-$SHEL/phs_conv.sh _sea
-wait
+#$SHEL/phs_conv.sh _sea
+#wait
