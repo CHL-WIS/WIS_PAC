@@ -44,6 +44,8 @@ class ww3:
 
                 ncfile.createDimension('lon',self.nlon)
                 ncfile.createDimension('lat',self.nlat)
+                mmfile.createDimension('lon',self.nlon)
+                mmfile.createDimension('lat',self.nlat)
 
                 dataset = ncfile.createVariable('grid','i4',('lat','lon',))
                 dataset[:] = self.grd
@@ -73,6 +75,26 @@ class ww3:
                 dataset.units = 'N/A'
                 dataset.dimension = self.yobstr.shape
 
+#                self.lon = np.arange(float(self.longitude[0]),float(self.longitude[1])+self.dlon,self.dlon)
+#                self.lat = np.arange(float(self.latitude[0]),float(self.latitude[1])+self.dlat,self.dlat)
+                self.lon = np.linspace(float(self.longitude[0]),float(self.longitude[1]),num=self.nlon)
+                self.lat = np.linspace(float(self.latitude[0]),float(self.latitude[1]),num=self.nlat)
+                dataset = ncfile.createVariable('longitude','f4',('lon',))
+                dataset[:] = self.lon
+                dataset.units = 'decimal degree'
+                dataset.dimension = self.lon.shape
+                lonres = self.lon[1] - self.lon[0]
+                dataset = ncfile.createVariable('latitude','f4',('lat',))
+                dataset[:] = self.lat
+                dataset.units = 'decimal degree'
+                dataset.dimension = self.lat.shape
+                latres = self.lat[1] - self.lat[0]
+
+
+            if key == 'wnd_u':
+                self.wndu = np.array(dataf)*float(header['Mfac'])
+            elif key == 'wnd_v':
+                self.wndv = np.array(dataf)*float(header['Mfac'])
 
             dataset = ncfile.createVariable(key,'i4',('time','lat','lon',))
             dataset[:] = dataf
@@ -82,10 +104,15 @@ class ww3:
             dataset.long_name = longn
             dataset.units = units
 
-            dmax,dmean = max_mean(dataf)
-            dataset = mmfile.create_dataset(key + '_max',(dmax.shape),dtype=('f4'))
+            dmax,dmean = self.max_mean(np.array(dataf)*float(header['Mfac']))
+            dataset = mmfile.createVariable(key + '_max','f4',('lat','lon',))
             dataset[...] = dmax
-            dataset = h5file.create_dataset(key + '_mean',(dmean.shape),dtype='f4'))
+            dataset = mmfile.createVariable(key + '_mean','f4',('lat','lon',))
+        wndspd, wnddir = self.calc_wndspd()
+        dmax,dmean = self.max_mean(wndspd)
+        dataset = mmfile.createVariable('wndspd_max','f4',('lat','lon',))
+        dataset[...] = dmax
+        dataset = mmfile.createVariable('wndspd_mean','f4',('lat','lon',))
 
       #  wh5.create_field_var_att(h5file,self.varname.keys())
        
@@ -158,9 +185,22 @@ class ww3:
         self.xobstr = a[:a.size/2].reshape(self.nlat,self.nlon)
         self.yobstr = a[a.size/2:].reshape(self.nlat,self.nlon)
 
-    def max_mean(self,dataf,mfac):
+    def calc_wndspd(self):
         import numpy as np
-        data = np.array(dataf)*mfac
+        wndspd = np.zeros((self.mask.shape))
+        for jlat in range(self.lat.size):
+            for ilon in range(self.lon.size):
+                if self.mask[jlat,ilon] == 0 or max(self.wndu[:,jlat,ilon] < -500.):
+                        wndspd[:,jlat,ilon] = -999.
+                else:
+                        wndspd[:,jlat,ilon] = np.sqrt(self.wndu[:,jlat,ilon]**2. + \
+                                                    self.wndv[:,jlat,ilon]**2.)
+                        wnddir[:,jlat,ilon] = np.arctan(self.wndu[:,jlat,ilon],self.wndv[:,jlat,ilon])
+        return wndspd, wnddir
+
+    def max_mean(self,dataf):
+        import numpy as np
+        data = np.array(dataf)
         dmax = np.zeros((self.mask.shape))
         dmean = np.zeros((self.mask.shape))
 
@@ -179,6 +219,8 @@ class ww3:
                     dmax[jlat,ilon] = np.max(temp)
                     dmean[jlat,ilon] = np.mean(temp)
         return dmax, dmean
+
+    
 
 if __name__ == "__main__":
     opts, args = getopt.getopt(sys.argv[1:],"h",["help"])
