@@ -157,7 +157,7 @@ cat > ${STORM_NAME}_post.sh << EOF
 #PBS -j oe
 #PBS -o ${RUN_NAME}_post.oe
 #PBS -m abe
-#PBS -M tyler.hesser@usace.army.mil
+#PBS -M Alan.Cialone@usace.army.mil
 #PBS -l ccm=1
 #PBS -l application=Other
 
