@@ -11,9 +11,10 @@ class ww3:
         self.yearmon = yearmon
         self.domain = domain
         self.varname = {'wavhs':'hs','wavtp':'fp','wavdir':'dir','wavspr':'spr','wavhs_wndsea':'phs_sea','wavtp_wndsea':'ptp_sea','wavdir_wndsea':'pdi_sea','wavhs_swell1':'phs_sw1','wavtp_swell1':'ptp_sw1','wavdir_swell1':'pdi_sw1','wavhs_swell2':'phs_sw2','wavtp_swell2':'ptp_sw2','wavdir_swell2':'pdi_sw2','wnd_u':'wnd','wnd_v':'wnd'}
+        mmset = ['wavhs','wavtp','wavhs_wndsea','wavtp_wndsea','wavhs_swell1','wavtp_swell1','wavhs_swell2','wavtp_swell2']
         basinname = {'pac':'Pacific Ocean','atl':'Atlantic Ocean','gom':'Gulf of Mexico'}
         ncfn = 'wis_' + basin + '_' + domain + '_' + yearmon + '.nc'
-        mmfn = 'wis_' + basin + '_' + domain + '_' + yearmon + 'max_mean.nc'
+        mmfn = 'wis_' + basin + '_' + domain + '_' + yearmon + '_max_mean.nc'
         ncfile = Dataset(ncfn,'w')
         mmfile = Dataset(mmfn,'w')
        # write_top_level_att(h5fname)
@@ -23,6 +24,7 @@ class ww3:
                 self.tt = tt
                 self.time2date()
                 ncfile.createDimension('time',len(self.tt))
+                mmfile.createDimension('time',len(self.tt))
                 dataset = ncfile.createVariable('time','i8',('time',))
                 dataset[:] = self.pytime
                 dataset.long_name = 'Time'
@@ -30,6 +32,18 @@ class ww3:
                 dataset.dimension = self.pytime.shape
                 ncfile.createDimension('date',6)
                 dataset = ncfile.createVariable('datetime','i4',('time','date',))
+                dataset[:] = self.dattime
+                dataset.long_name = 'Time in yyyy,mm,dd,hh,mm,ss'
+                dataset.units = 'year,month,day,hour,minute,second'
+                dataset.dimension = self.dattime.shape
+
+                dataset = mmfile.createVariable('time','i8',('time',))
+                dataset[:] = self.pytime
+                dataset.long_name = 'Time'
+                dataset.units = 'Seconds since 1970-01-01 00:00:00'
+                dataset.dimension = self.pytime.shape
+                mmfile.createDimension('date',6)
+                dataset = mmfile.createVariable('datetime','i4',('time','date',))
                 dataset[:] = self.dattime
                 dataset.long_name = 'Time in yyyy,mm,dd,hh,mm,ss'
                 dataset.units = 'year,month,day,hour,minute,second'
@@ -90,10 +104,23 @@ class ww3:
                 dataset.dimension = self.lat.shape
                 latres = self.lat[1] - self.lat[0]
 
+                dataset = mmfile.createVariable('longitude','f4',('lon',))
+                dataset[:] = self.lon
+                dataset.units = 'decimal degree'
+                dataset.dimension = self.lon.shape
+                lonres = self.lon[1] - self.lon[0]
+                dataset = mmfile.createVariable('latitude','f4',('lat',))
+                dataset[:] = self.lat
+                dataset.units = 'decimal degree'
+                dataset.dimension = self.lat.shape
+                latres = self.lat[1] - self.lat[0]
 
+  
             if key == 'wnd_u':
+                print dataf.shape
                 self.wndu = np.array(dataf)*float(header['Mfac'])
             elif key == 'wnd_v':
+                print dataf.shape
                 self.wndv = np.array(dataf)*float(header['Mfac'])
 
             dataset = ncfile.createVariable(key,'i4',('time','lat','lon',))
@@ -104,32 +131,36 @@ class ww3:
             dataset.long_name = longn
             dataset.units = units
 
-            dmax,dmean = self.max_mean(np.array(dataf)*float(header['Mfac']))
-            dataset = mmfile.createVariable(key + '_max','f4',('lat','lon',))
-            dataset[...] = dmax
-            dataset = mmfile.createVariable(key + '_mean','f4',('lat','lon',))
-        wndspd, wnddir = self.calc_wndspd()
+            if key in mmset:
+                dmax,dmean = self.max_mean(np.array(dataf)*float(header['Mfac']))
+                dataset = mmfile.createVariable(key + '_max','f4',('lat','lon',))
+                dataset[...] = dmax
+                dataset = mmfile.createVariable(key + '_mean','f4',('lat','lon',))
+                dataset[...] = dmean
+        
+        wndspd = self.calc_wndspd()
+#       "*****Calculating Windspeed"
         dmax,dmean = self.max_mean(wndspd)
         dataset = mmfile.createVariable('wndspd_max','f4',('lat','lon',))
         dataset[...] = dmax
         dataset = mmfile.createVariable('wndspd_mean','f4',('lat','lon',))
-
+        dataset[...] = dmean
       #  wh5.create_field_var_att(h5file,self.varname.keys())
        
-        self.lon = np.arange(float(self.longitude[0]),float(self.longitude[1])+self.dlon,self.dlon)
-        self.lat = np.arange(float(self.latitude[0]),float(self.latitude[1])+self.dlat,self.dlat)
-	self.lon2 = np.linspace(float(self.longitude[0]),float(self.longitude[1]),num=self.nlon)
-	self.lat2 = np.linspace(float(self.latitude[0]),float(self.latitude[1]),num=self.nlat)
-        dataset = ncfile.createVariable('longitude','f4',('lon',))
-        dataset[:] = self.lon2
-        dataset.units = 'decimal degree'
-        dataset.dimension = self.lon2.shape
-        lonres = self.lon2[1] - self.lon2[0]
-        dataset = ncfile.createVariable('latitude','f4',('lat',))
-        dataset[:] = self.lat2
-        dataset.units = 'decimal degree'
-        dataset.dimension = self.lat2.shape
-        latres = self.lat2[1] - self.lat2[0]
+#        self.lon = np.arange(float(self.longitude[0]),float(self.longitude[1])+self.dlon,self.dlon)
+#        self.lat = np.arange(float(self.latitude[0]),float(self.latitude[1])+self.dlat,self.dlat)
+#	self.lon = np.linspace(float(self.longitude[0]),float(self.longitude[1]),num=self.nlon)
+#	self.lat = np.linspace(float(self.latitude[0]),float(self.latitude[1]),num=self.nlat)
+#        dataset = ncfile.createVariable('longitude','f4',('lon',))
+#        dataset[:] = self.lon
+#        dataset.units = 'decimal degree'
+#        dataset.dimension = self.lon.shape
+#        lonres = self.lon[1] - self.lon[0]
+#        dataset = ncfile.createVariable('latitude','f4',('lat',))
+#        dataset[:] = self.lat
+#        dataset.units = 'decimal degree'
+#        dataset.dimension = self.lat.shape
+#        latres = self.lat[1] - self.lat[0]
         
         info = {'longitude':self.longitude,'latitude':self.latitude,'nlon':self.nlon,'nlat':self.nlat, \
                     'domain':self.domain,'basin':basinname[basin],'lonres':lonres,'latres':latres, \
@@ -187,16 +218,17 @@ class ww3:
 
     def calc_wndspd(self):
         import numpy as np
-        wndspd = np.zeros((self.mask.shape))
+        wndspd = np.zeros((self.wndu.shape))
+ #       wnddir = np.zeros((self.wndu.shape))
         for jlat in range(self.lat.size):
             for ilon in range(self.lon.size):
-                if self.mask[jlat,ilon] == 0 or max(self.wndu[:,jlat,ilon] < -500.):
-                        wndspd[:,jlat,ilon] = -999.
+#                for ttime in range(self.wndu.shape[0]):
+                if self.mask[jlat,ilon] == 0 or max(self.wndu[:,jlat,ilon]) < -90.0:
+                    wndspd[:,jlat,ilon] = -999.
                 else:
-                        wndspd[:,jlat,ilon] = np.sqrt(self.wndu[:,jlat,ilon]**2. + \
-                                                    self.wndv[:,jlat,ilon]**2.)
-                        wnddir[:,jlat,ilon] = np.arctan(self.wndu[:,jlat,ilon],self.wndv[:,jlat,ilon])
-        return wndspd, wnddir
+                    wndspd[:,jlat,ilon] = np.sqrt(self.wndu[:,jlat,ilon]**2. + self.wndv[:,jlat,ilon]**2.)
+ #                       wnddir[ttime,jlat,ilon] = np.arctan(self.wndu[ttime,jlat,ilon],self.wndv[ttime,jlat,ilon])
+        return wndspd
 
     def max_mean(self,dataf):
         import numpy as np
@@ -216,8 +248,13 @@ class ww3:
                         dmax[jlat,ilon] = 0
                         dmean[jlat,ilon] = 0
                 else:
-                    dmax[jlat,ilon] = np.max(temp)
-                    dmean[jlat,ilon] = np.mean(temp)
+                    if self.mask[jlat,ilon] == 0:
+                        dmax[jlat,ilon] = -1
+                        dmean[jlat,ilon] = -1
+                    else:
+                      #  print temp.shape
+                        dmax[jlat,ilon] = max(temp)
+                        dmean[jlat,ilon] = np.mean(temp,0)
         return dmax, dmean
 
     

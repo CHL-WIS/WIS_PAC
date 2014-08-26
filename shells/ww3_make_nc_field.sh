@@ -22,12 +22,12 @@ dirn=$lev"-field"
 cd $dirn
 cp $INPD/grids/$gridloc/*$lev* .
 /u/thesser1/anaconda/bin/python /lustre/work1/thesser1/WIS_PAC/python_codes/create_field_nc.py $yearmon $BASIN $lev
-tarmax1=$STORM_NAME"_"$leve"_MMf.tgz"
+tarmax1=$STORM_NAME"_"$lev"_MMf.tgz"
 tar -czf $tarmax1 wis*max_mean.nc
-rm wis*max_mean.nc
+#rm wis*max_mean.nc
 tarname1=$STORM_NAME"_"$lev"_field.tgz"
 tar -czf $tarname1 wis*.nc
 #tar -czf $tarname1 wis*.h5
-mv $tarname1 $WORKD
+mv *.tgz $WORKD
 cd $WORKD
-rm -rf $dirn
+#rm -rf $dirn

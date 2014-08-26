@@ -17,7 +17,7 @@ class ww3:
         self.read_ww3_ustar_netcdf()
         self.time2date()
         self.results = []
-        outtype = {'time':'f8','datetime':'int','wavhs':'f4','wavtp':'f4','wavtpp':'f4','wavtm':'f4','wavtm1':'f4','wavtm2':'f4', \
+        outtype = {'time':'i8','datetime':'i4','wavhs':'f4','wavtp':'f4','wavtpp':'f4','wavtm':'f4','wavtm1':'f4','wavtm2':'f4', \
                        'wavdir':'f4','wavspr':'f4','frequency':'f4','direction':'f4','ef2d':'f4','wndspd':'f4','wnddir':'f4','ustar':'f4', \
                        'cd':'f4','ef2d_swell':'f4','ef2d_wndsea':'f4','wavhs_wndsea':'f4','wavtp_wndsea':'f4','wavtpp_wndsea':'f4', \
                        'wavtm_wndsea':'f4','wavtm1_wndsea':'f4','wavtm2_wndsea':'f4','wavdir_wndsea':'f4','wavspr_wndsea':'f4','wavhs_swell':'f4', \
@@ -133,16 +133,26 @@ class ww3:
       #  self.dttime = []
         self.pytime = np.zeros((self.time.size,1))
         self.dattime = np.zeros((self.time.size,6))
+        dayold = 1
         for ii,itime in enumerate(self.time):
-            self.pytime[ii] = int((itime + DT.datetime.toordinal(DT.date(1990,01,01)) -  \
-                         DT.datetime.toordinal(DT.datetime(1970,01,01)))*(24.*3600.))
-            date = DT.datetime.fromordinal(int(itime) + DT.datetime.toordinal(DT.date(1990,01,01)))
+         #   print itime, (itime + DT.datetime.toordinal(DT.date(1990,01,01))),(itime + DT.datetime.toordinal(DT.date(1990,01,01))) - DT.datetime.toordinal(DT.datetime(1970,01,01)) 
+            self.pytime[ii] = int(round((itime + DT.datetime.toordinal(DT.date(1990,01,01)) -  \
+                         DT.datetime.toordinal(DT.datetime(1970,01,01)))*(24.*3600.)))
+            if itime < 0:
+                date = DT.datetime.fromordinal(int(itime) + DT.datetime.toordinal(DT.date(1990,01,01)) - 1)
+            else:
+                date = DT.datetime.fromordinal(int(itime) + DT.datetime.toordinal(DT.date(1990,01,01)))
             t = itime + DT.datetime.toordinal(DT.date(1990,01,01))
             tt = t - int(t)
             hour = int(round(tt*24))
             minu = int(round(tt*24*60) - hour*60)
             secs = int(round(tt*24*60*60) - hour*3600 - minu*60)
             time = DT.time(hour, minu, secs)
+          #  dtime = DT.datetime.combine(date,time)
+            if hour == 0:
+                date = DT.datetime.fromordinal(int(round(itime)) + DT.datetime.toordinal(DT.date(1990,01,01)))
+           #     dtime = DT.datetime(dtime.year,dtime.month,dtime.day+1,dtime.hour,dtime.minute,dtime.second)
+           # dayold = dtime.day
             dtime = DT.datetime.combine(date,time)
             self.dattime[ii,:] = dtime.year,dtime.month,dtime.day,dtime.hour,dtime.minute,dtime.second
             if ii == 0:
