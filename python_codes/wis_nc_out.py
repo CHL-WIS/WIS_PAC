@@ -110,11 +110,11 @@ def write_stat_nc(results):
         varshape = results['info']['outshape'][key]
         if isinstance(varshape,dict):
             if len(varshape) == 2:
-                dataset = ncfile.createVariable(key,results['info']['outtype'][key],(varshape[0],varshape[1]),fill_value=-999.9)
+                dataset = ncfile.createVariable(key,results['info']['outtype'][key],(varshape[0],varshape[1]))
             elif len(varshape) == 3:
                 dataset = ncfile.createVariable(key,results['info']['outtype'][key],(varshape[0],varshape[1],varshape[2]),fill_value=-999.9)
         else:
-            dataset = ncfile.createVariable(key,'f4',(results['info']['outshape'][key],),fill_value=-999.9)
+            dataset = ncfile.createVariable(key,results['info']['outtype'][key],(varshape,),fill_value=-999.9)
         dataset[:] = value
         dataset.Dimension = value.shape
         longn, units = create_stat_var_att(key)
