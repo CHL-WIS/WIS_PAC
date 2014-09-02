@@ -12,7 +12,7 @@ EXED=$BASE/exe
 SHEL=$BASE/shells
 INPD=$BASE/inputfiles
 FCOD=$BASE/fcode
-
+PYTH=$BASE/python_codes
 yearmon=`echo $STORM_NAME | cut -c1-6`
 
 cd $WORKD
@@ -21,7 +21,7 @@ echo $grd
 dirn=$lev"-field"
 cd $dirn
 cp $INPD/grids/$gridloc/*$lev* .
-/u/thesser1/anaconda/bin/python /lustre/work1/thesser1/WIS_PAC/python_codes/create_field_nc.py $yearmon $BASIN $lev
+/u/thesser1/anaconda/bin/python $PYTH/create_field_nc.py $yearmon $BASIN $lev
 tarmax1=$STORM_NAME"_"$lev"_MMf.tgz"
 tar -czf $tarmax1 wis*max_mean.nc
 #rm wis*max_mean.nc
