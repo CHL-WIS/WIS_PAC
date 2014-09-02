@@ -10,8 +10,8 @@ class ww3:
     def __init__(self,yearmon,basin,domain):
         self.yearmon = yearmon
         self.domain = domain
-        self.varname = {'wavhs':'hs','wavtp':'fp','wavdir':'dir','wavspr':'spr','wavhs_wndsea':'phs_sea','wavtp_wndsea':'ptp_sea','wavdir_wndsea':'pdi_sea','wavhs_swell1':'phs_sw1','wavtp_swell1':'ptp_sw1','wavdir_swell1':'pdi_sw1','wavhs_swell2':'phs_sw2','wavtp_swell2':'ptp_sw2','wavdir_swell2':'pdi_sw2','wnd_u':'wnd','wnd_v':'wnd'}
-        mmset = ['wavhs','wavtp','wavhs_wndsea','wavtp_wndsea','wavhs_swell1','wavtp_swell1','wavhs_swell2','wavtp_swell2']
+        self.varname = {'wavehs':'hs','wavetp':'fp','wavedir':'dir','wavespr':'spr','wavehs_wndsea':'phs_sea','wavetp_wndsea':'ptp_sea','wavedir_wndsea':'pdi_sea','wavehs_swell1':'phs_sw1','wavetp_swell1':'ptp_sw1','wavedir_swell1':'pdi_sw1','wavehs_swell2':'phs_sw2','wavetp_swell2':'ptp_sw2','wavedir_swell2':'pdi_sw2','wind_u':'wnd','wind_v':'wnd'}
+        mmset = ['wavehs','wavetp','wavehs_wndsea','wavetp_wndsea','wavehs_swell1','wavetp_swell1','wavehs_swell2','wavetp_swell2']
         basinname = {'pac':'Pacific Ocean','atl':'Atlantic Ocean','gom':'Gulf of Mexico'}
         ncfn = 'wis_' + basin + '_' + domain + '_' + yearmon + '.nc'
         mmfn = 'wis_' + basin + '_' + domain + '_' + yearmon + '_max_mean.nc'
@@ -116,10 +116,10 @@ class ww3:
                 latres = self.lat[1] - self.lat[0]
 
   
-            if key == 'wnd_u':
+            if key == 'wind_u':
                 print dataf.shape
                 self.wndu = np.array(dataf)*float(header['Mfac'])
-            elif key == 'wnd_v':
+            elif key == 'wind_v':
                 print dataf.shape
                 self.wndv = np.array(dataf)*float(header['Mfac'])
 
@@ -141,9 +141,9 @@ class ww3:
         wndspd = self.calc_wndspd()
 #       "*****Calculating Windspeed"
         dmax,dmean = self.max_mean(wndspd)
-        dataset = mmfile.createVariable('wndspd_max','f4',('lat','lon',))
+        dataset = mmfile.createVariable('windspd_max','f4',('lat','lon',))
         dataset[...] = dmax
-        dataset = mmfile.createVariable('wndspd_mean','f4',('lat','lon',))
+        dataset = mmfile.createVariable('windspd_mean','f4',('lat','lon',))
         dataset[...] = dmean
       #  wh5.create_field_var_att(h5file,self.varname.keys())
        

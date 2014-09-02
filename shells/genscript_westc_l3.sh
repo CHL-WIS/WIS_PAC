@@ -37,7 +37,7 @@ $
 $
    550. 230. 275. 15.
 $
-  &SIN4 BETAMAX = 1.33 /
+$  &SIN4 BETAMAX = 1.33 /
   &MISC FLAGTR = 2 /
 END OF NAMELISTS
 $

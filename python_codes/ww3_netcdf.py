@@ -10,6 +10,7 @@ class ww3:
         self.yearmon = yearmon
         self.year = yearmon[:4]
         self.mon = yearmon[4:]
+#	self.grid = grid
         basinname = {'pac':'Pacific Ocean','atl':'Atlantic Ocean','gom':'Gulf of Mexico'}
 
         self.read_ww3_spec_netcdf()
@@ -17,21 +18,21 @@ class ww3:
         self.read_ww3_ustar_netcdf()
         self.time2date()
         self.results = []
-        outtype = {'time':'i8','datetime':'i4','wavhs':'f4','wavtp':'f4','wavtpp':'f4','wavtm':'f4','wavtm1':'f4','wavtm2':'f4', \
-                       'wavdir':'f4','wavspr':'f4','frequency':'f4','direction':'f4','ef2d':'f4','wndspd':'f4','wnddir':'f4','ustar':'f4', \
-                       'cd':'f4','ef2d_swell':'f4','ef2d_wndsea':'f4','wavhs_wndsea':'f4','wavtp_wndsea':'f4','wavtpp_wndsea':'f4', \
-                       'wavtm_wndsea':'f4','wavtm1_wndsea':'f4','wavtm2_wndsea':'f4','wavdir_wndsea':'f4','wavspr_wndsea':'f4','wavhs_swell':'f4', \
-                       'wavtp_swell':'f4','wavtpp_swell':'f4','wavtm_swell':'f4','wavtm1_swell':'f4','wavtm2_swell':'f4','wavdir_swell':'f4', \
-                       'wavspr_swell':'f4'}
-        outshape = {'time':'time','datetime':{0:'time',1:'date'},'wavhs':'time','wavtp':'time','wavtpp':'time', \
-                        'wavtm':'time','wavtm1':'time','wavtm2':'time','wavdir':'time','wavspr':'time', \
-                        'frequency':'freq','direction':'direc','ef2d':{0:'time',1:'freq',2:'direc'},'wndspd':'time', \
-                        'wnddir':'time','ustar':'time','cd':'time','ef2d_swell':{0:'time',1:'freq',2:'direc'}, \
-                        'ef2d_wndsea':{0:'time',1:'freq',2:'direc'},'wavhs_wndsea':'time','wavtp_wndsea':'time', \
-                        'wavtpp_wndsea':'time','wavtm_wndsea':'time','wavtm1_wndsea':'time','wavtm2_wndsea':'time', \
-                        'wavdir_wndsea':'time','wavspr_wndsea':'time','wavhs_swell':'time','wavtp_swell':'time', \
-                        'wavtpp_swell':'time','wavtm_swell':'time','wavtm1_swell':'time','wavtm2_swell':'time', \
-                        'wavdir_swell':'time','wavspr_swell':'time'}
+        outtype = {'time':'i8','datetime':'i4','wavehs':'f4','wavetp':'f4','wavetpp':'f4','wavetm':'f4','wavetm1':'f4','wavetm2':'f4', \
+                       'wavedir':'f4','wavespr':'f4','frequency':'f4','direction':'f4','ef2d':'f4','windspeed':'f4','winddir':'f4','ustar':'f4', \
+                       'cd':'f4','ef2d_swell':'f4','ef2d_wndsea':'f4','wavehs_wndsea':'f4','wavetp_wndsea':'f4','wavetpp_wndsea':'f4', \
+                       'wavetm_wndsea':'f4','wavetm1_wndsea':'f4','wavetm2_wndsea':'f4','wavedir_wndsea':'f4','wavespr_wndsea':'f4','wavehs_swell':'f4', \
+                       'wavetp_swell':'f4','wavetpp_swell':'f4','wavetm_swell':'f4','wavetm1_swell':'f4','wavetm2_swell':'f4','wavedir_swell':'f4', \
+                       'wavespr_swell':'f4'}
+        outshape = {'time':'time','datetime':{0:'time',1:'date'},'wavehs':'time','wavetp':'time','wavetpp':'time', \
+                        'wavetm':'time','wavetm1':'time','wavetm2':'time','wavedir':'time','wavespr':'time', \
+                        'frequency':'freq','direction':'direc','ef2d':{0:'time',1:'freq',2:'direc'},'windspeed':'time', \
+                        'winddir':'time','ustar':'time','cd':'time','ef2d_swell':{0:'time',1:'freq',2:'direc'}, \
+                        'ef2d_wndsea':{0:'time',1:'freq',2:'direc'},'wavehs_wndsea':'time','wavetp_wndsea':'time', \
+                        'wavetpp_wndsea':'time','wavetm_wndsea':'time','wavetm1_wndsea':'time','wavetm2_wndsea':'time', \
+                        'wavedir_wndsea':'time','wavespr_wndsea':'time','wavehs_swell':'time','wavetp_swell':'time', \
+                        'wavetpp_swell':'time','wavetm_swell':'time','wavetm1_swell':'time','wavetm2_swell':'time', \
+                        'wavedir_swell':'time','wavespr_swell':'time'}
         for ii,stat in self.station.items():
             ef = self.ef2d[:,ii,:,:].reshape(len(self.time),len(self.freq),len(self.direc))
             wavhs = wp.calc_wvht(ef,self.freq,self.direc)
@@ -55,13 +56,13 @@ class ww3:
             wavdir_swell,wavspr_swell = wp.calc_wave_direction(efswell,self.freq,self.direc)
 
 
-            data = {'time':self.pytime,'datetime':self.dattime,'wavhs':wavhs,'wavtp':wavtp,'wavtpp':wavtpp,'wavtm':wavtm,'wavtm1':wavtm1,'wavtm2':wavtm2,'wavdir':wavdir, \
-                        'wavspr':wavspr,'frequency':np.array(self.freq),'direction':np.array(self.direc),'ef2d':np.array(ef),'wndspd':self.wndspd[:,ii], \
-                        'wnddir':self.wnddir[:,ii],'ustar':self.ustar[:,ii],'cd':self.cd[:,ii],'ef2d_swell':efswell,'ef2d_wndsea':efwndsea, \
-                        'wavhs_wndsea':wavhs_wndsea,'wavtp_wndsea':wavtp_wndsea,'wavtpp_wndsea':wavtpp_wndsea,'wavtm_wndsea':wavtm_wndsea, \
-                        'wavtm1_wndsea':wavtm1_wndsea,'wavtm2_wndsea':wavtm2_wndsea,'wavdir_wndsea':wavdir_wndsea,'wavspr_wndsea':wavspr_wndsea, \
-                        'wavhs_swell':wavhs_swell,'wavtp_swell':wavtp_swell,'wavtpp_swell':wavtpp_swell,'wavtm_swell':wavtm_swell, \
-                        'wavtm1_swell':wavtm1_swell,'wavtm2_swell':wavtm2_swell,'wavdir_swell':wavdir_swell,'wavspr_swell':wavspr_swell}
+            data = {'time':self.pytime,'datetime':self.dattime,'wavehs':wavhs,'wavetp':wavtp,'wavetpp':wavtpp,'wavetm':wavtm,'wavetm1':wavtm1,'wavetm2':wavtm2,'wavedir':wavdir, \
+                        'wavespr':wavspr,'frequency':np.array(self.freq),'direction':np.array(self.direc),'ef2d':np.array(ef),'windspeed':self.wndspd[:,ii], \
+                        'winddir':self.wnddir[:,ii],'ustar':self.ustar[:,ii],'cd':self.cd[:,ii],'ef2d_swell':efswell,'ef2d_wndsea':efwndsea, \
+                        'wavehs_wndsea':wavhs_wndsea,'wavetp_wndsea':wavtp_wndsea,'wavetpp_wndsea':wavtpp_wndsea,'wavetm_wndsea':wavtm_wndsea, \
+                        'wavetm1_wndsea':wavtm1_wndsea,'wavetm2_wndsea':wavtm2_wndsea,'wavedir_wndsea':wavdir_wndsea,'wavespr_wndsea':wavspr_wndsea, \
+                        'wavehs_swell':wavhs_swell,'wavetp_swell':wavtp_swell,'wavetpp_swell':wavtpp_swell,'wavetm_swell':wavtm_swell, \
+                        'wavetm1_swell':wavtm1_swell,'wavetm2_swell':wavtm2_swell,'wavedir_swell':wavdir_swell,'wavespr_swell':wavspr_swell}
             info = {'station':stat,'longitude':self.longitude[ii],'latitude':self.latitude[ii],'outtype':outtype,'depth':self.depth[ii], \
                         'basin':basinname[basin],'outshape':outshape, \
                         'timestart':self.timestart,'timeend':self.timeend,'year':self.year,'month':self.mon}
@@ -74,8 +75,11 @@ class ww3:
     def read_ww3_spec_netcdf(self):
         from netCDF4 import Dataset
         import glob
-        fnames = glob.glob('ww3.*' + self.yearmon + '_spec.nc')
-        f = Dataset(fnames[0])
+        fnames = sorted(glob.glob('ww3.*' + self.yearmon + '_spec.nc'))
+#        try:
+	f = Dataset(fnames[0])
+#	except:
+#		print "error handling in grid " + self.grid
         self.time = f.variables['time'][:]
         self.freq = f.variables['frequency'][:]
         self.direc = f.variables['direction'][:]
@@ -106,7 +110,7 @@ class ww3:
     def read_ww3_dep_netcdf(self):
         from netCDF4 import Dataset
         import glob
-        fnames = glob.glob('ww3_dep.*' + self.yearmon + '_tab.nc')
+        fnames = sorted(glob.glob('ww3_dep.*' + self.yearmon + '_tab.nc'))
         self.wndspd = np.zeros((self.time.shape[0],self.numstation))
         self.wnddir = np.zeros((self.time.shape[0],self.numstation))
         self.depth = np.zeros((self.numstation))
@@ -119,7 +123,7 @@ class ww3:
     def read_ww3_ustar_netcdf(self):
         from netCDF4 import Dataset
         import glob
-        fnames = glob.glob('ww3_ust.*' + self.yearmon + '_tab.nc')
+        fnames = sorted(glob.glob('ww3_ust.*' + self.yearmon + '_tab.nc'))
         self.ustar = np.zeros((self.time.shape[0],self.numstation))
         self.cd = np.zeros((self.time.shape[0],self.numstation))
         for ii, fname in enumerate(fnames):
@@ -181,4 +185,5 @@ if __name__ == "__main__":
     opts, args = getopt.getopt(sys.argv[1:],"h",["help"])
     yearmon = args[0]
     basin = args[1]
+#    grid = args[2]
     ww3(yearmon,basin)

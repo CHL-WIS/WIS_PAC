@@ -27,35 +27,15 @@ fi
 #cd $WORKD/$lev
 echo $grd
 dirn=$lev"-point"$setn
-if [ ! -d $dirn ] 
-then
-  mkdir $dirn
-fi
-moddef="mod_def."$lev
-outpnt="out_pnt."$lev
 echo $moddef
-cp $moddef $dirn/mod_def.ww3
-cp $outpnt $dirn/out_pnt.ww3
-cp *.datesin $dirn
 cd $dirn
 # ----------------------------------------------------
 #  Point Analysis
 # ----------------------------------------------------
-if [ ! -f out_pnt.ww3 ] 
-  then
-    mv *point.tgz $WORKD
-    cd $WORKD
-#    rm -rf $WORKD/$lev 
-    echo " ALERT ALERT IT's A Trap"
-    exit 0
-fi
-outp="post_ounp.sh"
-$SHEL/$outp $STORM_NAME $BASE $WORKD/$dirn $lev $sta $sto 
+/u/thesser1/anaconda/bin/python $PYTH/ww3_netcdf.py $yearmon $BASIN $level-$setn
 wait
-cd $WORKD/$dirn
-/u/thesser1/anaconda/bin/python $PYTH/ww3_netcdf.py $yearmon $BASIN
-cp $WORKD/$dirn/ST*.nc $WORKD/$lev
-#cd $WORKD
+mv $WORKD/$dirn/ST*.nc $WORKD/$lev
+cd $WORKD
 #rm -rf $dirn
 #tarname2=$STORM_NAME"_"$lev"_point_set"$setn".tgz"
 #tar -czf $tarname2 ST*.h5
