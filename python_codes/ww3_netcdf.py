@@ -18,7 +18,7 @@ class ww3:
         self.read_ww3_ustar_netcdf()
         self.time2date()
         self.results = []
-        outtype = {'time':'i8','datetime':'i4','wavehs':'f4','wavetp':'f4','wavetpp':'f4','wavetm':'f4','wavetm1':'f4','wavetm2':'f4', \
+        outtype = {'time':'i4','datetime':'i4','wavehs':'f4','wavetp':'f4','wavetpp':'f4','wavetm':'f4','wavetm1':'f4','wavetm2':'f4', \
                        'wavedir':'f4','wavespr':'f4','frequency':'f4','direction':'f4','ef2d':'f4','windspeed':'f4','winddir':'f4','ustar':'f4', \
                        'cd':'f4','ef2d_swell':'f4','ef2d_wndsea':'f4','wavehs_wndsea':'f4','wavetp_wndsea':'f4','wavetpp_wndsea':'f4', \
                        'wavetm_wndsea':'f4','wavetm1_wndsea':'f4','wavetm2_wndsea':'f4','wavedir_wndsea':'f4','wavespr_wndsea':'f4','wavehs_swell':'f4', \
