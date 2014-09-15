@@ -18,13 +18,15 @@ class ww3:
         self.read_ww3_ustar_netcdf()
         self.time2date()
         self.results = []
-        outtype = {'time':'i4','datetime':'i4','wavehs':'f4','wavetp':'f4','wavetpp':'f4','wavetm':'f4','wavetm1':'f4','wavetm2':'f4', \
+        # 'datetime':'i4'
+        outtype = {'time':'i4','wavehs':'f4','wavetp':'f4','wavetpp':'f4','wavetm':'f4','wavetm1':'f4','wavetm2':'f4', \
                        'wavedir':'f4','wavespr':'f4','frequency':'f4','direction':'f4','ef2d':'f4','windspeed':'f4','winddir':'f4','ustar':'f4', \
                        'cd':'f4','ef2d_swell':'f4','ef2d_wndsea':'f4','wavehs_wndsea':'f4','wavetp_wndsea':'f4','wavetpp_wndsea':'f4', \
                        'wavetm_wndsea':'f4','wavetm1_wndsea':'f4','wavetm2_wndsea':'f4','wavedir_wndsea':'f4','wavespr_wndsea':'f4','wavehs_swell':'f4', \
                        'wavetp_swell':'f4','wavetpp_swell':'f4','wavetm_swell':'f4','wavetm1_swell':'f4','wavetm2_swell':'f4','wavedir_swell':'f4', \
                        'wavespr_swell':'f4'}
-        outshape = {'time':'time','datetime':{0:'time',1:'date'},'wavehs':'time','wavetp':'time','wavetpp':'time', \
+        # 'datetime':{0:'time',1:'date'}
+        outshape = {'time':'time','wavehs':'time','wavetp':'time','wavetpp':'time', \
                         'wavetm':'time','wavetm1':'time','wavetm2':'time','wavedir':'time','wavespr':'time', \
                         'frequency':'freq','direction':'direc','ef2d':{0:'time',1:'freq',2:'direc'},'windspeed':'time', \
                         'winddir':'time','ustar':'time','cd':'time','ef2d_swell':{0:'time',1:'freq',2:'direc'}, \
@@ -55,8 +57,8 @@ class ww3:
             wavtm1_swell,wavtm2_swell = wp.calc_tm1_tm2(efswell,self.freq,self.direc)
             wavdir_swell,wavspr_swell = wp.calc_wave_direction(efswell,self.freq,self.direc)
 
-
-            data = {'time':self.pytime,'datetime':self.dattime,'wavehs':wavhs,'wavetp':wavtp,'wavetpp':wavtpp,'wavetm':wavtm,'wavetm1':wavtm1,'wavetm2':wavtm2,'wavedir':wavdir, \
+            # 'datetime':self.dattime
+            data = {'time':self.pytime,'wavehs':wavhs,'wavetp':wavtp,'wavetpp':wavtpp,'wavetm':wavtm,'wavetm1':wavtm1,'wavetm2':wavtm2,'wavedir':wavdir, \
                         'wavespr':wavspr,'frequency':np.array(self.freq),'direction':np.array(self.direc),'ef2d':np.array(ef),'windspeed':self.wndspd[:,ii], \
                         'winddir':self.wnddir[:,ii],'ustar':self.ustar[:,ii],'cd':self.cd[:,ii],'ef2d_swell':efswell,'ef2d_wndsea':efwndsea, \
                         'wavehs_wndsea':wavhs_wndsea,'wavetp_wndsea':wavtp_wndsea,'wavetpp_wndsea':wavtpp_wndsea,'wavetm_wndsea':wavtm_wndsea, \
@@ -134,30 +136,33 @@ class ww3:
     def time2date(self):
         import datetime as DT
         import numpy as np
+        from netCDF4 import num2date, date2num
       #  self.dttime = []
         self.pytime = np.zeros((self.time.size,1))
         self.dattime = np.zeros((self.time.size,6))
         dayold = 1
         for ii,itime in enumerate(self.time):
-         #   print itime, (itime + DT.datetime.toordinal(DT.date(1990,01,01))),(itime + DT.datetime.toordinal(DT.date(1990,01,01))) - DT.datetime.toordinal(DT.datetime(1970,01,01)) 
-            self.pytime[ii] = int(round((itime + DT.datetime.toordinal(DT.date(1990,01,01)) -  \
-                         DT.datetime.toordinal(DT.datetime(1970,01,01)))*(24.*3600.)))
-            if itime < 0:
-                date = DT.datetime.fromordinal(int(itime) + DT.datetime.toordinal(DT.date(1990,01,01)) - 1)
-            else:
-                date = DT.datetime.fromordinal(int(itime) + DT.datetime.toordinal(DT.date(1990,01,01)))
-            t = itime + DT.datetime.toordinal(DT.date(1990,01,01))
-            tt = t - int(t)
-            hour = int(round(tt*24))
-            minu = int(round(tt*24*60) - hour*60)
-            secs = int(round(tt*24*60*60) - hour*3600 - minu*60)
-            time = DT.time(hour, minu, secs)
+         #   print itime, (itime + DT.datetime.toordinal(DT.date(1990,01,01))),(itime + DT.datetime.toordinal(DT.date(1990,01,01))) - DT.datetime.toordinal(DT.datetime(1970,01,01))
+            dtime = num2date(itime,units='days since 1990-01-01 00:00:00.0',calendar='gregorian')
+            self.pytime[ii] = int(round(date2num(dtime,units='seconds since 1970-01-01 00:00:00.0',calendar='gregorian')))
+#            self.pytime[ii] = int(round((itime + DT.datetime.toordinal(DT.date(1990,01,01)) -  \
+#                         DT.datetime.toordinal(DT.datetime(1970,01,01)))*(24.*3600.)))
+#            if itime < 0:
+#                date = DT.datetime.fromordinal(int(itime) + DT.datetime.toordinal(DT.date(1990,01,01)) - 1)
+#            else:
+#                date = DT.datetime.fromordinal(int(itime) + DT.datetime.toordinal(DT.date(1990,01,01)))
+#            t = itime + DT.datetime.toordinal(DT.date(1990,01,01))
+#            tt = t - int(t)
+#            hour = int(round(tt*24))
+#            minu = int(round(tt*24*60) - hour*60)
+#            secs = int(round(tt*24*60*60) - hour*3600 - minu*60)
+#            time = DT.time(hour, minu, secs)
           #  dtime = DT.datetime.combine(date,time)
-            if hour == 0:
-                date = DT.datetime.fromordinal(int(round(itime)) + DT.datetime.toordinal(DT.date(1990,01,01)))
+#            if hour == 0:
+#                date = DT.datetime.fromordinal(int(round(itime)) + DT.datetime.toordinal(DT.date(1990,01,01)))
            #     dtime = DT.datetime(dtime.year,dtime.month,dtime.day+1,dtime.hour,dtime.minute,dtime.second)
            # dayold = dtime.day
-            dtime = DT.datetime.combine(date,time)
+#            dtime = DT.datetime.combine(date,time)
             self.dattime[ii,:] = dtime.year,dtime.month,dtime.day,dtime.hour,dtime.minute,dtime.second
             if ii == 0:
                 self.timestart = dtime

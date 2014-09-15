@@ -105,16 +105,16 @@ def write_stat_nc(results):
     ncfile.createDimension('time',results['data']['time'].shape[0])
     ncfile.createDimension('freq',results['data']['frequency'].shape[0])
     ncfile.createDimension('direc',results['data']['direction'].shape[0])
-    ncfile.createDimension('date',6)
+  #  ncfile.createDimension('date',6)
     for key,value in results['data'].items():
         varshape = results['info']['outshape'][key]
         if isinstance(varshape,dict):
             if len(varshape) == 2:
-                dataset = ncfile.createVariable(key,results['info']['outtype'][key],(varshape[0],varshape[1]))
+                dataset = ncfile.createVariable(key,results['info']['outtype'][key],(varshape[0],varshape[1]),zlib=True,complevel=4)
             elif len(varshape) == 3:
-                dataset = ncfile.createVariable(key,results['info']['outtype'][key],(varshape[0],varshape[1],varshape[2]),fill_value=-999.9)
+                dataset = ncfile.createVariable(key,results['info']['outtype'][key],(varshape[0],varshape[1],varshape[2]),fill_value=-999.9,zlib=True,complevel=4)
         else:
-            dataset = ncfile.createVariable(key,results['info']['outtype'][key],(varshape,),fill_value=-999.9)
+            dataset = ncfile.createVariable(key,results['info']['outtype'][key],(varshape,),fill_value=-999.9,zlib=True,complevel=4)
         dataset[:] = value
         dataset.Dimension = value.shape
         longn, units = create_stat_var_att(key)
