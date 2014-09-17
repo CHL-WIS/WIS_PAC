@@ -15,10 +15,13 @@ cat > serial_post.sh << EOF
 
 cd $WORKDIR
 
-(   $SHEL/ww3_post_mpi.sh  basin_l1 $STORM_NAME $BASE $BASIN $UNAME  > ww3_post1.out    ) &
-(   $SHEL/ww3_post_mpi.sh  westc_l2 $STORM_NAME $BASE $BASIN $UNAME > ww3_post2.out    ) &
-(   $SHEL/ww3_post_mpi.sh  westc_l3 $STORM_NAME $BASE $BASIN $UNAME > ww3_post3.out    ) &
-(   $SHEL/ww3_post_mpi.sh  cali_l4  $STORM_NAME $BASE $BASIN $UNAME > ww3_post4.out    ) &
+   $SHEL/ww3_post_mpi.sh  basin_l1 basin $STORM_NAME $BASE > ww3_post1.out     &
+   $SHEL/ww3_post_mpi.sh  westc_l2 westc $STORM_NAME $BASE > ww3_post2.out     &
+   $SHEL/ww3_post_mpi.sh  westc_l3 westc $STORM_NAME $BASE > ww3_post3.out     &
+   $SHEL/ww3_post_mpi.sh  cali_l4  cali $STORM_NAME $BASE > ww3_post4.out     &
+   $SHEL/ww3_post_mpi.sh  hawaii_l2 hawaii $STORM_NAME $BASE > ww3_post3.out     &
+   $SHEL/ww3_post_mpi.sh  hawaii_l3  hawaii $STORM_NAME $BASE  > ww3_post4.out     &
+
 
 wait
 
@@ -50,7 +53,7 @@ cat > ${STORM_NAME}_post.sh << EOF
 #
 cd $WORKDIR
 
-aprun -n 1 -d 4 $WORKDIR/serial_post.sh > serial_post.out
+ccmrun $WORKDIR/serial_post.sh > serial_post.out
 wait
 
 #

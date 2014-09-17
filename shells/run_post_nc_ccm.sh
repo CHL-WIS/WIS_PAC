@@ -9,7 +9,7 @@ SHEL=$BASE/shells
 WORKDIR=$BASE/outdat/$STORM_NAME
 
 cd $WORKDIR
-cat > serial_points1.sh << EOF
+cat > serial_points.sh << EOF
 #!/bin/bash
 
 cd $WORKDIR
@@ -89,7 +89,7 @@ cd $WORKDIR
 wait
 
 EOF
-chmod 760 $WORKDIR/serial_points1.sh
+chmod 760 $WORKDIR/serial_points.sh
 
 cd $WORKDIR
 cat > serial_fields.sh << EOF

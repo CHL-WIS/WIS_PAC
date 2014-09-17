@@ -11,7 +11,7 @@ class ww3:
         self.yearmon = yearmon
         self.domain = domain
         self.complevel = 4
-        self.varname = {'wavehs':'hs','wavetp':'fp','wavedir':'dir','wavespr':'spr','wavehs_wndsea':'phs_sea','wavetp_wndsea':'ptp_sea','wavedir_wndsea':'pdi_sea','wavehs_swell1':'phs_sw1','wavetp_swell1':'ptp_sw1','wavedir_swell1':'pdi_sw1','wavehs_swell2':'phs_sw2','wavetp_swell2':'ptp_sw2','wavedir_swell2':'pdi_sw2','wind_u':'wnd','wind_v':'wnd'}
+        self.varname = {'wavehs':'hs','wavetp':'fp','wavedir':'dir','wavehs_wndsea':'phs_sea','wavetp_wndsea':'ptp_sea','wavedir_wndsea':'pdi_sea','wavehs_swell1':'phs_sw1','wavetp_swell1':'ptp_sw1','wavedir_swell1':'pdi_sw1','wavehs_swell2':'phs_sw2','wavetp_swell2':'ptp_sw2','wavedir_swell2':'pdi_sw2','wind_u':'wnd','wind_v':'wnd'}
         mmset = ['wavehs','wavetp','wavehs_wndsea','wavetp_wndsea','wavehs_swell1','wavetp_swell1','wavehs_swell2','wavetp_swell2']
         basinname = {'pac':'Pacific Ocean','atl':'Atlantic Ocean','gom':'Gulf of Mexico'}
         ncfn = 'wis_' + basin + '_' + domain + '_' + yearmon + '.nc'
@@ -118,19 +118,19 @@ class ww3:
 
   
             if key == 'wind_u':
-                print dataf.shape
                 self.wndu = np.array(dataf)*float(header['Mfac'])
             elif key == 'wind_v':
-                print dataf.shape
                 self.wndv = np.array(dataf)*float(header['Mfac'])
 
-            dataset = ncfile.createVariable(key,'i4',('time','lat','lon',),zlib=True,complevel=self.complevel)
-            dataset[:] = dataf
-            dataset.dimension = dataf.shape
-            dataset.mfactor = header['Mfac']
-            longn, units = wnc.create_field_var_att(key)
-            dataset.long_name = longn
-            dataset.units = units
+            if 'wind' not in key:
+                print key
+                dataset = ncfile.createVariable(key,'i4',('time','lat','lon',),zlib=True,complevel=self.complevel)
+                dataset[:] = dataf
+                dataset.dimension = dataf.shape
+                dataset.mfactor = header['Mfac']
+                longn, units = wnc.create_field_var_att(key)
+                dataset.long_name = longn
+                dataset.units = units
 
             if key in mmset:
                 dmax,dmean = self.max_mean(np.array(dataf)*float(header['Mfac']))
