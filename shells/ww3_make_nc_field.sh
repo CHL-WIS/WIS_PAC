@@ -30,4 +30,4 @@ tar -czf $tarname1 wis*.nc
 #tar -czf $tarname1 wis*.h5
 mv *.tgz $WORKD
 cd $WORKD
-#rm -rf $dirn
+rm -rf $dirn

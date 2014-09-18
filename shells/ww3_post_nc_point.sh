@@ -55,8 +55,8 @@ wait
 cd $WORKD/$dirn
 /u/thesser1/anaconda/bin/python $PYTH/ww3_netcdf.py $yearmon $BASIN
 cp $WORKD/$dirn/ST*.nc $WORKD/$lev
-#cd $WORKD
-#rm -rf $dirn
+cd $WORKD
+rm -rf $dirn
 #tarname2=$STORM_NAME"_"$lev"_point_set"$setn".tgz"
 #tar -czf $tarname2 ST*.h5
 #mv $WORKD/$dirn/*point.tgz $WORKD/$lev

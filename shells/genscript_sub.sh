@@ -15,7 +15,7 @@ cat > ${STORM_NAME}.sh << EOF
 #!/bin/bash
 #
 #PBS -N $RUN_NAME
-#PBS -q standard 
+#PBS -q standard
 #PBS -A ERDCV03995SHS
 #PBS -l select=6:ncpus=32:mpiprocs=32
 #PBS -l walltime=5:30:00
@@ -53,7 +53,7 @@ mv restart.hawaii_l3 old-restart.hawaii_l3
 $SHEL/make_restart.sh $STORM_NAME $BASE
 $SHEL/run_WW3_WIS.sh
 
-#$SHEL/run_post_nc.sh $STORM_NAME $RUN_NAME $BASE $BASIN
+$SHEL/run_post_nc_ccm.sh $STORM_NAME $RUN_NAME $BASE $BASIN
 #
 # ----------------------------------------------------------------
 # end submit script
