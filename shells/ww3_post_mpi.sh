@@ -4,8 +4,6 @@ level=$1
 gridloc=$2
 STORM_NAME=$3
 BASE=$4
-BASIN=$5
-UNAME=$6
 
 WORKD=$BASE/outdat/$STORM_NAME
 
@@ -13,7 +11,7 @@ EXED=$BASE/exe
 SHEL=$BASE/shells
 INPD=$BASE/inputfiles
 FCOD=$BASE/fcode
-
+GRD=$INPD/grids/$gridloc
 yearmon=`echo $STORM_NAME | cut -c1-6`
 #level[1]="LEVEL1"
 #level[2]="LEVEL2"
@@ -50,7 +48,7 @@ $SHEL/$outf $STORM_NAME $BASE $WORKD/$lev
 ls -1 *_sea > fort.15
 
 wsep="wsep_points.x"
-ln $INPD/*$grd*.grd $WORKD/$lev
+ln $GRD/*$grd*.grd $WORKD/$lev
 ls -1 *$grd*.grd > fort.5
 $FCOD/$wsep < fort.5
 #

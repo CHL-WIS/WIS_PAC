@@ -10,7 +10,8 @@ class ww3:
     def __init__(self,yearmon,basin,domain):
         self.yearmon = yearmon
         self.domain = domain
-        self.varname = {'wavehs':'hs','wavetp':'fp','wavedir':'dir','wavespr':'spr','wavehs_wndsea':'phs_sea','wavetp_wndsea':'ptp_sea','wavedir_wndsea':'pdi_sea','wavehs_swell1':'phs_sw1','wavetp_swell1':'ptp_sw1','wavedir_swell1':'pdi_sw1','wavehs_swell2':'phs_sw2','wavetp_swell2':'ptp_sw2','wavedir_swell2':'pdi_sw2','wind_u':'wnd','wind_v':'wnd'}
+        self.complevel = 4
+        self.varname = {'wavehs':'hs','wavetp':'fp','wavedir':'dir','wavehs_wndsea':'phs_sea','wavetp_wndsea':'ptp_sea','wavedir_wndsea':'pdi_sea','wavehs_swell1':'phs_sw1','wavetp_swell1':'ptp_sw1','wavedir_swell1':'pdi_sw1','wavehs_swell2':'phs_sw2','wavetp_swell2':'ptp_sw2','wavedir_swell2':'pdi_sw2','wind_u':'wnd','wind_v':'wnd'}
         mmset = ['wavehs','wavetp','wavehs_wndsea','wavetp_wndsea','wavehs_swell1','wavetp_swell1','wavehs_swell2','wavetp_swell2']
         basinname = {'pac':'Pacific Ocean','atl':'Atlantic Ocean','gom':'Gulf of Mexico'}
         ncfn = 'wis_' + basin + '_' + domain + '_' + yearmon + '.nc'
@@ -25,25 +26,25 @@ class ww3:
                 self.time2date()
                 ncfile.createDimension('time',len(self.tt))
                 mmfile.createDimension('time',len(self.tt))
-                dataset = ncfile.createVariable('time','i8',('time',))
+                dataset = ncfile.createVariable('time','i8',('time',),zlib=True,complevel=self.complevel)
                 dataset[:] = self.pytime
                 dataset.long_name = 'Time'
                 dataset.units = 'Seconds since 1970-01-01 00:00:00'
                 dataset.dimension = self.pytime.shape
                 ncfile.createDimension('date',6)
-                dataset = ncfile.createVariable('datetime','i4',('time','date',))
+                dataset = ncfile.createVariable('datetime','i4',('time','date',),zlib=True,complevel=self.complevel)
                 dataset[:] = self.dattime
                 dataset.long_name = 'Time in yyyy,mm,dd,hh,mm,ss'
                 dataset.units = 'year,month,day,hour,minute,second'
                 dataset.dimension = self.dattime.shape
 
-                dataset = mmfile.createVariable('time','i8',('time',))
+                dataset = mmfile.createVariable('time','i8',('time',),zlib=True,complevel=self.complevel)
                 dataset[:] = self.pytime
                 dataset.long_name = 'Time'
                 dataset.units = 'Seconds since 1970-01-01 00:00:00'
                 dataset.dimension = self.pytime.shape
                 mmfile.createDimension('date',6)
-                dataset = mmfile.createVariable('datetime','i4',('time','date',))
+                dataset = mmfile.createVariable('datetime','i4',('time','date',),zlib=True,complevel=self.complevel)
                 dataset[:] = self.dattime
                 dataset.long_name = 'Time in yyyy,mm,dd,hh,mm,ss'
                 dataset.units = 'year,month,day,hour,minute,second'
@@ -61,28 +62,28 @@ class ww3:
                 mmfile.createDimension('lon',self.nlon)
                 mmfile.createDimension('lat',self.nlat)
 
-                dataset = ncfile.createVariable('grid','i4',('lat','lon',))
+                dataset = ncfile.createVariable('grid','i4',('lat','lon',),zlib=True,complevel=self.complevel)
                 dataset[:] = self.grd
                 dataset.mfactor = 0.001
                 dataset.long_name = 'Water Depth Grid'
                 dataset.units = 'meter'
                 dataset.dimension = self.grd.shape
 
-                dataset = ncfile.createVariable('mask','i4',('lat','lon',))
+                dataset = ncfile.createVariable('mask','i4',('lat','lon',),zlib=True,complevel=self.complevel)
                 dataset[:] = self.mask
                 dataset.mfactor = 1
                 dataset.long_name = 'Land/Water Mask'
                 dataset.units = 'N/A'
                 dataset.dimension = self.mask.shape
 
-                dataset = ncfile.createVariable('xobstr','i4',('lat','lon',))
+                dataset = ncfile.createVariable('xobstr','i4',('lat','lon',),zlib=True,complevel=self.complevel)
                 dataset[:] = self.xobstr
                 dataset.mfactor = 0.01
                 dataset.long_name = 'Obstruction Grid X Direction'
                 dataset.units = 'N/A'
                 dataset.dimension = self.xobstr.shape
 
-                dataset = ncfile.createVariable('yobstr','i4',('lat','lon',))
+                dataset = ncfile.createVariable('yobstr','i4',('lat','lon',),zlib=True,complevel=self.complevel)
                 dataset[:] = self.yobstr
                 dataset.mfactor = 0.01
                 dataset.long_name = 'Obstruction Grid Y Direction'
@@ -93,23 +94,23 @@ class ww3:
 #                self.lat = np.arange(float(self.latitude[0]),float(self.latitude[1])+self.dlat,self.dlat)
                 self.lon = np.linspace(float(self.longitude[0]),float(self.longitude[1]),num=self.nlon)
                 self.lat = np.linspace(float(self.latitude[0]),float(self.latitude[1]),num=self.nlat)
-                dataset = ncfile.createVariable('longitude','f4',('lon',))
+                dataset = ncfile.createVariable('longitude','f4',('lon',),zlib=True,complevel=self.complevel)
                 dataset[:] = self.lon
                 dataset.units = 'decimal degree'
                 dataset.dimension = self.lon.shape
                 lonres = self.lon[1] - self.lon[0]
-                dataset = ncfile.createVariable('latitude','f4',('lat',))
+                dataset = ncfile.createVariable('latitude','f4',('lat',),zlib=True,complevel=self.complevel)
                 dataset[:] = self.lat
                 dataset.units = 'decimal degree'
                 dataset.dimension = self.lat.shape
                 latres = self.lat[1] - self.lat[0]
 
-                dataset = mmfile.createVariable('longitude','f4',('lon',))
+                dataset = mmfile.createVariable('longitude','f4',('lon',),zlib=True,complevel=self.complevel)
                 dataset[:] = self.lon
                 dataset.units = 'decimal degree'
                 dataset.dimension = self.lon.shape
                 lonres = self.lon[1] - self.lon[0]
-                dataset = mmfile.createVariable('latitude','f4',('lat',))
+                dataset = mmfile.createVariable('latitude','f4',('lat',),zlib=True,complevel=self.complevel)
                 dataset[:] = self.lat
                 dataset.units = 'decimal degree'
                 dataset.dimension = self.lat.shape
@@ -117,33 +118,33 @@ class ww3:
 
   
             if key == 'wind_u':
-                print dataf.shape
                 self.wndu = np.array(dataf)*float(header['Mfac'])
             elif key == 'wind_v':
-                print dataf.shape
                 self.wndv = np.array(dataf)*float(header['Mfac'])
 
-            dataset = ncfile.createVariable(key,'i4',('time','lat','lon',))
-            dataset[:] = dataf
-            dataset.dimension = dataf.shape
-            dataset.mfactor = header['Mfac']
-            longn, units = wnc.create_field_var_att(key)
-            dataset.long_name = longn
-            dataset.units = units
+            if 'wind' not in key:
+                print key
+                dataset = ncfile.createVariable(key,'i4',('time','lat','lon',),zlib=True,complevel=self.complevel)
+                dataset[:] = dataf
+                dataset.dimension = dataf.shape
+                dataset.mfactor = header['Mfac']
+                longn, units = wnc.create_field_var_att(key)
+                dataset.long_name = longn
+                dataset.units = units
 
             if key in mmset:
                 dmax,dmean = self.max_mean(np.array(dataf)*float(header['Mfac']))
-                dataset = mmfile.createVariable(key + '_max','f4',('lat','lon',))
+                dataset = mmfile.createVariable(key + '_max','f4',('lat','lon',),zlib=True,complevel=self.complevel)
                 dataset[...] = dmax
-                dataset = mmfile.createVariable(key + '_mean','f4',('lat','lon',))
+                dataset = mmfile.createVariable(key + '_mean','f4',('lat','lon',),zlib=True,complevel=self.complevel)
                 dataset[...] = dmean
         
         wndspd = self.calc_wndspd()
 #       "*****Calculating Windspeed"
         dmax,dmean = self.max_mean(wndspd)
-        dataset = mmfile.createVariable('windspd_max','f4',('lat','lon',))
+        dataset = mmfile.createVariable('windspd_max','f4',('lat','lon',),zlib=True,complevel=self.complevel)
         dataset[...] = dmax
-        dataset = mmfile.createVariable('windspd_mean','f4',('lat','lon',))
+        dataset = mmfile.createVariable('windspd_mean','f4',('lat','lon',),zlib=True,complevel=self.complevel)
         dataset[...] = dmean
       #  wh5.create_field_var_att(h5file,self.varname.keys())
        
